@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CoverageData\CoverageData.proto" />
+    <None Include="OpenCppCoverage-x64\unins000.dat" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -217,9 +218,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Newtonsoft.Json.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="OpenCppCoverage-x64\boost_date_time-vc142-mt-x64-1_72.dll" />
     <Content Include="OpenCppCoverage-x64\boost_filesystem-vc142-mt-x64-1_72.dll" />
     <Content Include="OpenCppCoverage-x64\boost_iostreams.dll">
@@ -244,6 +242,7 @@
     <Content Include="OpenCppCoverage-x64\libctemplate.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="OpenCppCoverage-x64\libprotobuf-lite.dll" />
     <Content Include="OpenCppCoverage-x64\libprotobuf.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -314,6 +313,7 @@
     <Content Include="OpenCppCoverage-x64\Tools.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="OpenCppCoverage-x64\unins000.exe" />
     <Content Include="OpenCppCoverage-x64\vcruntime140.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -323,110 +323,7 @@
     <Content Include="OpenCppCoverage-x64\zstd.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="OpenCppCoverage-x86\boost_date_time-vc142-mt-x32-1_72.dll" />
-    <Content Include="OpenCppCoverage-x86\boost_filesystem-vc142-mt-x32-1_72.dll" />
-    <Content Include="OpenCppCoverage-x86\boost_iostreams.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\boost_locale-vc142-mt-x32-1_72.dll" />
-    <Content Include="OpenCppCoverage-x86\boost_log-vc142-mt-x32-1_72.dll" />
-    <Content Include="OpenCppCoverage-x86\boost_program_options-vc142-mt-x32-1_72.dll" />
-    <Content Include="OpenCppCoverage-x86\boost_thread-vc142-mt-x32-1_72.dll" />
-    <Content Include="OpenCppCoverage-x86\bz2.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\FileFilter.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\libprotobuf.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\lzma.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\msdia140.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\msvcp140.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\OpenCppCoverage.exe">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Plugin.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Plugins\Exporter\ForceFolderCreation.txt">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\JQuery\jquery-3.4.1.min.js" />
-    <Content Include="OpenCppCoverage-x86\vcruntime140.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\zlib1.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\zstd.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Resources\Package.ico" />
-    <Content Include="OpenCppCoverage-x86\Template\MainTemplate.html">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\SourceTemplate.html">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\css\style.css">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\botleft.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\botright.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\left.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\css\table-images\right.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\google-code-prettify\prettify-CppCoverage.css">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\google-code-prettify\prettify.js">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\google-code-prettify\run_prettify.js">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.common.core.js">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.common.dynamic.js">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.common.tooltips.js">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\libraries\RGraph.pie.js">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Template\third-party\RGraph\license.txt">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\CppCoverage.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Exporter.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\libctemplate.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="OpenCppCoverage-x86\Tools.dll">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="Themes.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -493,24 +390,24 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CommonServiceLocator">
-      <Version>1.3.0</Version>
+      <Version>2.0.7</Version>
     </PackageReference>
     <PackageReference Include="Google.ProtocolBuffers">
       <Version>2.4.1.555</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>17.3.32804.24</Version>
+      <Version>17.5.33428.388</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>17.4.2118</Version>
+      <Version>17.5.4065</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MvvmLightLibs">
-      <Version>5.3.0</Version>
+      <Version>5.4.1.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
+      <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
