@@ -21,7 +21,7 @@ using System.Text;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class ConfigurationManager: IConfigurationManager
+    class ConfigurationManager : IConfigurationManager
     {
         //---------------------------------------------------------------------
         public static readonly string ProjectNotMarkedAsBuildError
@@ -29,13 +29,13 @@ namespace OpenCppCoverage.VSPackage
                 + "Please check your solution Configuration Manager.";
 
         //---------------------------------------------------------------------
-        public DynamicVCConfiguration GetConfiguration(
+        public DynamicVcConfiguration GetConfiguration(
             SolutionConfiguration2 activeConfiguration,
             ExtendedProject project)
         {
             string error;
             var configuration = ComputeConfiguration(activeConfiguration, project, out error);
-            
+
             if (configuration == null)
                 throw new VSPackageException(error);
 
@@ -43,7 +43,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        public DynamicVCConfiguration FindConfiguration(
+        public DynamicVcConfiguration FindConfiguration(
             SolutionConfiguration2 activeConfiguration,
             ExtendedProject project)
         {
@@ -60,9 +60,9 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        DynamicVCConfiguration ComputeConfiguration(
+        DynamicVcConfiguration ComputeConfiguration(
             SolutionConfiguration2 activeConfiguration,
-            ExtendedProject project, 
+            ExtendedProject project,
             out string error)
         {
             error = null;
@@ -81,9 +81,9 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        static DynamicVCConfiguration ComputeConfiguration(
-            ExtendedProject project, 
-            SolutionContext context, 
+        static DynamicVcConfiguration ComputeConfiguration(
+            ExtendedProject project,
+            SolutionContext context,
             ref string error)
         {
             var configurations = project.Configurations;
@@ -107,8 +107,8 @@ namespace OpenCppCoverage.VSPackage
 
         //---------------------------------------------------------------------
         SolutionContext ComputeContext(
-            SolutionConfiguration2 activeConfiguration, 
-            ExtendedProject project, 
+            SolutionConfiguration2 activeConfiguration,
+            ExtendedProject project,
             ref string error)
         {
             var contexts = activeConfiguration.SolutionContexts.Cast<SolutionContext>();

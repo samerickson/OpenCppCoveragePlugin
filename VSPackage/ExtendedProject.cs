@@ -19,52 +19,28 @@ using System.Collections.Generic;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class ExtendedProject
-    {        
+    internal class ExtendedProject
+    {
         //---------------------------------------------------------------------
-        public ExtendedProject(Project project, DynamicVCProject vcProject)
+        public ExtendedProject(Project project, DynamicVcProject vcProject)
         {
             this.project_ = project;
             this.vcProject_ = vcProject;
         }
-        
-        //---------------------------------------------------------------------
-        public string UniqueName
-        {
-            get
-            {
-                return project_.UniqueName;
-            }
-        }
 
         //---------------------------------------------------------------------
-        public string Path
-        {
-            get
-            {
-                return project_.FullName;
-            }
-        }
+        public string UniqueName => project_.UniqueName;
 
         //---------------------------------------------------------------------
-        public List<DynamicVCConfiguration> Configurations
-        {
-            get
-            {
-                return vcProject_.Configurations;
-            }
-        }
+        public string Path => project_.FullName;
 
         //---------------------------------------------------------------------
-        public List<DynamicVCFile> Files
-        {
-            get
-            {
-                return vcProject_.Files;
-            }
-        }
+        public List<DynamicVcConfiguration> Configurations => vcProject_.Configurations;
+
+        //---------------------------------------------------------------------
+        public List<DynamicVcFile> Files => vcProject_.Files;
 
         readonly Project project_;
-        readonly DynamicVCProject vcProject_;
+        readonly DynamicVcProject vcProject_;
     }
 }

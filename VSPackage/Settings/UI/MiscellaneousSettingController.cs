@@ -22,32 +22,29 @@ using System.Linq;
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
     //-------------------------------------------------------------------------
-    class MiscellaneousSettingController: PropertyChangedNotifier
+    internal class MiscellaneousSettingController : PropertyChangedNotifier
     {
-        public class SettingsData: PropertyChangedNotifier
+        public class SettingsData : PropertyChangedNotifier
         {
             //---------------------------------------------------------------------
-            string optionalConfigFile;
+            private string _optionalConfigFile;
             public string OptionalConfigFile
             {
-                get { return this.optionalConfigFile; }
-                set { this.SetField(ref this.optionalConfigFile, value); }
+                get => this._optionalConfigFile; set => this.SetField(ref this._optionalConfigFile, value);
             }
 
             //---------------------------------------------------------------------
-            MiscellaneousSettings.LogType logTypeValue;
+            private MiscellaneousSettings.LogType _logTypeValue;
             public MiscellaneousSettings.LogType LogTypeValue
             {
-                get { return this.logTypeValue; }
-                set { this.SetField(ref this.logTypeValue, value); }
+                get => this._logTypeValue; set => this.SetField(ref this._logTypeValue, value);
             }
 
             //---------------------------------------------------------------------
-            bool continueAfterCppExceptions;
+            private bool _continueAfterCppExceptions;
             public bool ContinueAfterCppExceptions
             {
-                get { return this.continueAfterCppExceptions; }
-                set { this.SetField(ref this.continueAfterCppExceptions, value); }
+                get => this._continueAfterCppExceptions; set => this.SetField(ref this._continueAfterCppExceptions, value);
             }
 
         }
@@ -61,11 +58,10 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         }
 
         //---------------------------------------------------------------------
-        SettingsData settings;
+        private SettingsData _settings;
         public SettingsData Settings
         {
-            get { return this.settings; }
-            private set { this.SetField(ref this.settings, value); }
+            get => this._settings; private set => this.SetField(ref this._settings, value);
         }
 
         //---------------------------------------------------------------------
@@ -96,18 +92,18 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         }
 
         //---------------------------------------------------------------------
-        bool hasConfigFile;
+        private bool _hasConfigFile;
         public bool HasConfigFile
         {
-            get { return this.hasConfigFile; }
+            get => this._hasConfigFile;
             set
             {
-                if (this.SetField(ref this.hasConfigFile, value) && !value)
+                if (this.SetField(ref this._hasConfigFile, value) && !value)
                     this.Settings.OptionalConfigFile = null;
             }
         }
 
-        //---------------------------------------------------------------------        
+        //---------------------------------------------------------------------
         public IEnumerable<MiscellaneousSettings.LogType> LogTypeValues { get; }
     }
 }

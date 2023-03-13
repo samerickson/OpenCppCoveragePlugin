@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace OpenCppCoverage.VSPackage.Settings
 {
-    class StartUpProjectSettings
+    internal class StartUpProjectSettings
     {
         public class CppProject
         {

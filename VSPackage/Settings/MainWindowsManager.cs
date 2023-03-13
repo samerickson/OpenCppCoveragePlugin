@@ -19,26 +19,26 @@ using OpenCppCoverage.VSPackage.Settings.UI;
 
 namespace OpenCppCoverage.VSPackage.Settings
 {
-    class MainWindowsManager
+    internal class MainWindowsManager
     {
-        readonly IWindowFinder windowFinder;
-        readonly MainSettingController mainSettingController;
+        private readonly IWindowFinder _windowFinder;
+        private readonly MainSettingController _mainSettingController;
 
         //---------------------------------------------------------------------
         public MainWindowsManager(IWindowFinder windowFinder, MainSettingController mainSettingController)
         {
-            this.windowFinder = windowFinder;
-            this.mainSettingController = mainSettingController;
+            this._windowFinder = windowFinder;
+            this._mainSettingController = mainSettingController;
         }
 
         //---------------------------------------------------------------------
-        SettingToolWindow ConfigureSettingsWindows(
+        private SettingToolWindow ConfigureSettingsWindows(
             ProjectSelectionKind kind,
             bool displayProgramOutput)
         {
-            this.mainSettingController.UpdateFields(kind, displayProgramOutput);
-            var window = this.windowFinder.FindToolWindow<SettingToolWindow>();
-            window.Init(this.mainSettingController);
+            this._mainSettingController.UpdateFields(kind, displayProgramOutput);
+            var window = this._windowFinder.FindToolWindow<SettingToolWindow>();
+            window.Init(this._mainSettingController);
 
             return window;
         }

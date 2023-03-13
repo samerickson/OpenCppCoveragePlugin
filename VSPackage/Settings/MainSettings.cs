@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace OpenCppCoverage.VSPackage.Settings
 {
     //---------------------------------------------------------------------------
-    class MainSettings
+    internal class MainSettings
     {
         public BasicSettings BasicSettings { get; set; }
         public FilterSettings FilterSettings { get; set; }
@@ -30,7 +30,7 @@ namespace OpenCppCoverage.VSPackage.Settings
     }
 
     //---------------------------------------------------------------------------
-    class BasicSettings
+    internal class BasicSettings
     {
         public IEnumerable<string> ModulePaths { get; set; }
         public IEnumerable<string> SourcePaths { get; set; }
@@ -45,7 +45,7 @@ namespace OpenCppCoverage.VSPackage.Settings
     }
 
     //---------------------------------------------------------------------------
-    class FilterSettings
+    internal class FilterSettings
     {
         //-------------------------------------------------------------------------
         public class UnifiedDiff
@@ -62,7 +62,7 @@ namespace OpenCppCoverage.VSPackage.Settings
     }
 
     //---------------------------------------------------------------------------
-    class ImportExportSettings
+    internal class ImportExportSettings
     {
         //---------------------------------------------------------------------
         public enum Type
@@ -87,7 +87,7 @@ namespace OpenCppCoverage.VSPackage.Settings
     }
 
     //---------------------------------------------------------------------------
-    class MiscellaneousSettings
+    internal class MiscellaneousSettings
     {
         public enum LogType
         {

@@ -22,15 +22,13 @@ using ProtoBuff = global::OpenCppCoverage.VSPackage.CoverageData.ProtoBuff;
 namespace OpenCppCoverage.VSPackage.CoverageRateBuilder
 {
     //--------------------------------------------------------------------------
-    class CoverageRateBuilder
+    internal class CoverageRateBuilder
     {
         //---------------------------------------------------------------------
         public CoverageRate Build(CoverageResult result)
         {
             var protoBuffCoverageData = result.CoverageData;
-            var coverageRate = new CoverageRate(
-                                    protoBuffCoverageData.Name, 
-                                    protoBuffCoverageData.ExitCode);
+            var coverageRate = new CoverageRate(protoBuffCoverageData.Name, protoBuffCoverageData.ExitCode);
             foreach (var protoModule in result.Modules)
             {
                 var module = new ModuleCoverage(protoModule.Path);
@@ -43,14 +41,11 @@ namespace OpenCppCoverage.VSPackage.CoverageRateBuilder
         }
 
         //---------------------------------------------------------------------
-        FileCoverage BuildFileCoverage(ProtoBuff.FileCoverage protoFile)
+        private static FileCoverage BuildFileCoverage(ProtoBuff.FileCoverage protoFile)
         {
             var lines = protoFile.LinesList;
 
-            return new FileCoverage(
-                protoFile.Path,
-                lines.Select(l => new LineCoverage(
-                    (int)l.LineNumber, l.HasBeenExecuted)).ToList());
+            return new FileCoverage(protoFile.Path, lines.Select(l => new LineCoverage((int)l.LineNumber, l.HasBeenExecuted)).ToList());
         }
     }
 }

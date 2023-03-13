@@ -67,7 +67,7 @@ namespace VSPackage_IntegrationTests
 
     //---------------------------------------------------------------------
     class SolutionConfigurationHelpers
-    {                
+    {
         //---------------------------------------------------------------------
         static public DebugSettingsRestorer GetCurrentDebugSettings(string applicationName)
         {
@@ -90,7 +90,7 @@ namespace VSPackage_IntegrationTests
         {
             var dte = VsIdeTestHostContext.Dte;
             var configurations = dte.Solution.SolutionBuild.SolutionConfigurations.Cast<SolutionConfiguration2>();
-    
+
             return configurations.First(
                 c => c.Name == configurationName.ToString() && c.PlatformName == platformName.ToString());
         }
@@ -115,9 +115,9 @@ namespace VSPackage_IntegrationTests
             var configurations = (IEnumerable)vcCppConsoleApplication.Configurations;
             var solutionConfiguration =
                 VsIdeTestHostContext.Dte.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
-                        
+
             return configurations.Cast<VCConfiguration>().First(
-                c => c.ConfigurationName == solutionConfiguration.Name && c.Platform.Name == solutionConfiguration.PlatformName);            
-        }                
+                c => c.ConfigurationName == solutionConfiguration.Name);
+        }
     }
 }

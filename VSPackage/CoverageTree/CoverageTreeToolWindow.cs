@@ -16,13 +16,12 @@
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
 using System.Runtime.InteropServices;
 
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
     [Guid("2731AD3B-8E0A-46D2-B8F6-CA40C387732F")]
-    class CoverageTreeToolWindow : ToolWindowPane, IVsExtensibleObject
+    internal sealed class CoverageTreeToolWindow : ToolWindowPane, IVsExtensibleObject
     {
         //---------------------------------------------------------------------
         public CoverageTreeToolWindow() : base(null)

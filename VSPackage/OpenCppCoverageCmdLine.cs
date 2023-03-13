@@ -20,9 +20,9 @@ using System.IO;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class OpenCppCoverageCmdLine: IOpenCppCoverageCmdLine
+    internal class OpenCppCoverageCmdLine : IOpenCppCoverageCmdLine
     {
-        readonly TemporaryFile configFile;
+        private readonly TemporaryFile _configFile;
 
         //---------------------------------------------------------------------
         public static readonly string SourcesFlag = "sources";
@@ -49,13 +49,13 @@ namespace OpenCppCoverage.VSPackage
         //---------------------------------------------------------------------
         public OpenCppCoverageCmdLine(TemporaryFile configFile)
         {
-            this.configFile = configFile;
+            this._configFile = configFile;
         }
 
         //---------------------------------------------------------------------
         public string Build(MainSettings settings, string lineSeparator = " ")
         {
-            var configPath = this.configFile.Path;
+            var configPath = this._configFile.Path;
             using (var writer = new StreamWriter(configPath))
             {
                 var builder = new CommandLineBuilder();
@@ -65,19 +65,14 @@ namespace OpenCppCoverage.VSPackage
                 AppendMiscellaneousSettings(writer, builder, settings.MiscellaneousSettings);
 
                 // Should be last settings for program to run.
-                AppendBasicSettings(writer, configPath,  builder, settings.BasicSettings, settings.DisplayProgramOutput);
+                AppendBasicSettings(writer, configPath, builder, settings.BasicSettings, settings.DisplayProgramOutput);
 
                 return builder.GetCommandLine(lineSeparator);
             }
         }
 
         //---------------------------------------------------------------------
-        static void AppendBasicSettings(
-            StreamWriter writer,
-            string configPath,
-            CommandLineBuilder builder,
-            BasicSettings settings,
-            bool waitAfterExit)
+        private static void AppendBasicSettings(TextWriter writer, string configPath, CommandLineBuilder builder, BasicSettings settings, bool waitAfterExit)
         {
             AppendArgumentCollection(writer, SourcesFlag, settings.SourcePaths);
             AppendArgumentCollection(writer, ModulesFlag, settings.ModulePaths);
@@ -96,9 +91,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        static void AppendFilterSettings(
-            StreamWriter writer,
-            FilterSettings settings)
+        private static void AppendFilterSettings(TextWriter writer, FilterSettings settings)
         {
             AppendArgumentCollection(writer, SourcesFlag, settings.AdditionalSourcePaths);
             AppendArgumentCollection(writer, ModulesFlag, settings.AdditionalModulePaths);
@@ -108,31 +101,27 @@ namespace OpenCppCoverage.VSPackage
             foreach (var unifiedDiff in settings.UnifiedDiffs)
             {
                 var argumentValue = unifiedDiff.UnifiedDiffPath;
-                if (!string.IsNullOrWhiteSpace(argumentValue))
-                {
-                    if (!string.IsNullOrWhiteSpace(unifiedDiff.OptionalRootFolder))
-                        argumentValue = argumentValue + UnifiedDiffSeparator + unifiedDiff.OptionalRootFolder;
-                    AppendArgument(writer, UnifiedDiffFlag, argumentValue);
-                }
+                if (string.IsNullOrWhiteSpace(argumentValue)) continue;
+
+                if (!string.IsNullOrWhiteSpace(unifiedDiff.OptionalRootFolder))
+                    argumentValue = argumentValue + UnifiedDiffSeparator + unifiedDiff.OptionalRootFolder;
+                AppendArgument(writer, UnifiedDiffFlag, argumentValue);
             }
         }
 
         //---------------------------------------------------------------------
-        static void AppendImportExportSettings(
-            StreamWriter writer,
-            ImportExportSettings settings)
+        private static void AppendImportExportSettings(TextWriter writer, ImportExportSettings settings)
         {
             AppendArgumentCollection(writer, InputCoverageFlag, settings.InputCoverages);
 
             foreach (var export in settings.Exports)
             {
                 var path = export.Path;
-                if (!string.IsNullOrWhiteSpace(path))
-                {
-                    var type = export.Type.ToString().ToLowerInvariant();
-                    AppendArgument(writer, ExportTypeFlag,
-                         type + ExportTypeSeparator + path);
-                }
+                if (string.IsNullOrWhiteSpace(path)) continue;
+
+                var type = export.Type.ToString().ToLowerInvariant();
+                AppendArgument(writer, ExportTypeFlag,
+                    type + ExportTypeSeparator + path);
             }
 
             if (settings.CoverChildrenProcesses)
@@ -142,10 +131,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        void AppendMiscellaneousSettings(
-            StreamWriter writer,
-            CommandLineBuilder builder,
-            MiscellaneousSettings settings)
+        private static void AppendMiscellaneousSettings(TextWriter writer, CommandLineBuilder builder, MiscellaneousSettings settings)
         {
             if (!string.IsNullOrWhiteSpace(settings.OptionalConfigFile))
             {
@@ -154,10 +140,10 @@ namespace OpenCppCoverage.VSPackage
                     var lines = File.ReadAllLines(settings.OptionalConfigFile);
                     foreach (var line in lines)
                         writer.WriteLine(line);
-                } 
+                }
                 catch (FileNotFoundException)
                 {
-                    string message = $"Cannot find the config file defined in Miscellanous tab: {settings.OptionalConfigFile}";
+                    var message = $"Cannot find the config file defined in Miscellaneous tab: {settings.OptionalConfigFile}";
                     throw new VSPackageException(message);
                 }
             }
@@ -178,10 +164,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        static void AppendArgumentCollection(
-            StreamWriter writer,
-            string argumentName,
-            IEnumerable<string> values)
+        private static void AppendArgumentCollection(TextWriter writer, string argumentName, IEnumerable<string> values)
         {
             foreach (var value in values)
             {
@@ -191,13 +174,9 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        static void AppendArgument(
-            StreamWriter writer,
-            string argumentName,
-            string value)
+        private static void AppendArgument(TextWriter writer, string argumentName, string value)
         {
-            if (value == null)
-                value = OptionWithoutValue;
+            if (value == null) value = OptionWithoutValue;
             writer.WriteLine($"{argumentName}{OptionValueSeparator}{value}");
         }
     }

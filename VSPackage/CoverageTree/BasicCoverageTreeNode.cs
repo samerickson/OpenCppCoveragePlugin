@@ -26,19 +26,19 @@ using System.Windows.Media.Imaging;
 
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
-    class BasicCoverageTreeNode: SharpTreeNode
+    internal class BasicCoverageTreeNode : SharpTreeNode
     {
-        readonly BaseCoverage coverage;
-        readonly string name;
-        readonly ImageSource icon;
+        private readonly BaseCoverage _coverage;
+        private readonly string _name;
+        private readonly ImageSource _icon;
 
-        static readonly string imagesFolder;
+        private static readonly string ImagesFolder;
 
         //-----------------------------------------------------------------------
         static BasicCoverageTreeNode()
         {
             var rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            BasicCoverageTreeNode.imagesFolder = Path.Combine(rootFolder, "CoverageTree", "Images");
+            BasicCoverageTreeNode.ImagesFolder = Path.Combine(rootFolder, "CoverageTree", "Images");
         }
 
         //-----------------------------------------------------------------------
@@ -48,29 +48,17 @@ namespace OpenCppCoverage.VSPackage.CoverageTree
             string iconFilename,
             bool isLeaf)
         {
-            this.name = name;
-            this.coverage = coverage;
+            this._name = name;
+            this._coverage = coverage;
             this.LazyLoading = !isLeaf;
-            this.icon = LoadIcon(iconFilename);
+            this._icon = LoadIcon(iconFilename);
         }
 
         //-----------------------------------------------------------------------
-        public override object Icon
-        {
-            get
-            {
-                return icon;
-            }
-        }
+        public override object Icon => _icon;
 
         //-----------------------------------------------------------------------
-        public override object Text
-        {
-            get
-            {
-                return this.name;
-            }
-        }
+        public override object Text => this._name;
 
         //-----------------------------------------------------------------------
         public double? OptionalCoverageRate
@@ -95,36 +83,18 @@ namespace OpenCppCoverage.VSPackage.CoverageTree
         }
 
         //-----------------------------------------------------------------------
-        public int CoveredLineCount
-        {
-            get
-            {
-                return this.coverage.CoverLineCount;
-            }
-        }
+        public int CoveredLineCount => this._coverage.CoverLineCount;
 
         //-----------------------------------------------------------------------
-        public int UncoveredLineCount
-        {
-            get
-            {
-                return this.coverage.TotalLineCount - this.coverage.CoverLineCount;
-            }
-        }
+        public int UncoveredLineCount => this._coverage.TotalLineCount - this._coverage.CoverLineCount;
 
         //-----------------------------------------------------------------------
-        public int TotalLineCount
-        {
-            get
-            {
-                return this.coverage.TotalLineCount;
-            }
-        }
+        public int TotalLineCount => this._coverage.TotalLineCount;
 
         //-----------------------------------------------------------------------
-        protected IEnumerable<TreeNode> AddChildrenNode<T, TreeNode>(
+        protected IEnumerable<TReeNode> AddChildrenNode<T, TReeNode>(
             IEnumerable<T> children,
-            Func<T, TreeNode> nodeFactory) where TreeNode: BasicCoverageTreeNode
+            Func<T, TReeNode> nodeFactory) where TReeNode : BasicCoverageTreeNode
         {
             var childrenNode = children.Select(nodeFactory);
 
@@ -138,9 +108,9 @@ namespace OpenCppCoverage.VSPackage.CoverageTree
         }
 
         //-----------------------------------------------------------------------
-        static ImageSource LoadIcon(string iconFilename)
+        private static ImageSource LoadIcon(string iconFilename)
         {
-            var iconPath = Path.Combine(imagesFolder, iconFilename);
+            var iconPath = Path.Combine(ImagesFolder, iconFilename);
             return BitmapFrame.Create(new Uri(iconPath, UriKind.Absolute));
         }
     }

@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class ProjectBuilder
+    internal class ProjectBuilder
     {
         readonly DTE2 dte;
         readonly ErrorHandler errorHandler;
@@ -42,22 +42,21 @@ namespace OpenCppCoverage.VSPackage
 
         //---------------------------------------------------------------------
         public void Build(
-            string solutionConfigurationName, 
-            string projectName, 
+            string solutionConfigurationName,
+            string projectName,
             Action<bool> userCallBack)
         {
             var buildHandler = CreateBuildHandler(solutionConfigurationName, projectName, userCallBack);
 
             // buildEvents need to be a member to avoid a garbage collector issue.
             this.buildEvents.OnBuildProjConfigDone += buildHandler;
-            
+
             this.outputWindowWriter.WriteLine(
-                "Start building " + projectName 
+                "Start building " + projectName
                 + " " + solutionConfigurationName);
 
             var output = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
-            if (output != null)
-                output.Activate();
+            output?.Activate();
 
             var solutionBuild = this.dte.Solution.SolutionBuild;
 
@@ -67,55 +66,44 @@ namespace OpenCppCoverage.VSPackage
             }
             catch (COMException e)
             {
-                throw new VSPackageException(
-                    string.Format("Error when building {0} with configuration {1}: {2}",
-                        projectName, solutionConfigurationName, e.Message));
+                throw new VSPackageException($"Error when building {projectName} with configuration {solutionConfigurationName}: {e.Message}");
             }
         }
 
         //---------------------------------------------------------------------
-        _dispBuildEvents_OnBuildProjConfigDoneEventHandler CreateBuildHandler(
+        private _dispBuildEvents_OnBuildProjConfigDoneEventHandler CreateBuildHandler(
             string solutionConfigurationName,
             string projectName,
             Action<bool> userCallBack)
         {
             var buildContext = new BuildContext();
-            _dispBuildEvents_OnBuildProjConfigDoneEventHandler onBuildDone =
-                (string project, string projectConfig, string platform, string solutionConfig, bool success)
-                    => OnBuildProjConfigDone(
-                                project, projectConfig, platform,
-                                solutionConfig, success, buildContext);
-            buildContext.OnBuildDone = onBuildDone;
+            void OnBuildDone(string project, string projectConfig, string platform, string solutionConfig, bool success) =>
+                OnBuildProjConfigDone(project, projectConfig, platform, solutionConfig, success, buildContext);
+
+            buildContext.OnBuildDone = OnBuildDone;
             buildContext.UserCallBack = userCallBack;
             buildContext.ProjectName = projectName;
             buildContext.SolutionConfigurationName = solutionConfigurationName;
 
-            return onBuildDone;
+            return OnBuildDone;
         }
 
         //---------------------------------------------------------------------
-        void OnBuildProjConfigDone(
-            string project,
-            string projectConfig,
-            string platform,
-            string solutionConfig,
-            bool success,
-            BuildContext buildContext)
+        private void OnBuildProjConfigDone(string project, string projectConfig, string platform, string solutionConfig, bool success, BuildContext buildContext)
         {
             // This method is executed asynchronously and so we need to catch errors.
             this.errorHandler.Execute(() =>
             {
-                if (project == buildContext.ProjectName 
-                && solutionConfig == buildContext.SolutionConfigurationName)
-                {
-                    this.buildEvents.OnBuildProjConfigDone -= buildContext.OnBuildDone;
-                    buildContext.UserCallBack(success);
-                }
+                if (project != buildContext.ProjectName
+                    || solutionConfig != buildContext.SolutionConfigurationName) return;
+
+                this.buildEvents.OnBuildProjConfigDone -= buildContext.OnBuildDone;
+                buildContext.UserCallBack(success);
             });
         }
 
         //---------------------------------------------------------------------
-        class BuildContext
+        private class BuildContext
         {
             public _dispBuildEvents_OnBuildProjConfigDoneEventHandler OnBuildDone { get; set; }
             public Action<bool> UserCallBack { get; set; }

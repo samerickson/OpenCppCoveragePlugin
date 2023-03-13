@@ -5,14 +5,12 @@ using System.Windows.Data;
 
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
-    class NullCollapsedConverter : IValueConverter
+    internal class NullCollapsedConverter : IValueConverter
     {
         //-----------------------------------------------------------------------
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return Visibility.Collapsed;
-            return Visibility.Visible;
+            return value == null ? Visibility.Collapsed : Visibility.Visible;
         }
 
         //-----------------------------------------------------------------------

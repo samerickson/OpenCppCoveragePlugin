@@ -19,13 +19,10 @@ using OpenCppCoverage.VSPackage.Settings.UI;
 
 namespace OpenCppCoverage.VSPackage.Settings
 {
-    interface ISettingsStorage
+    internal interface ISettingsStorage
     {
-        string Save(
-           string optionalProjectPath,
-           string optionalSolutionConfigurationName,
-           UserInterfaceSettings settings);
-        
+        string Save(string optionalProjectPath, string optionalSolutionConfigurationName, UserInterfaceSettings settings);
+
         UserInterfaceSettings TryLoad(string optionalProjectPath, string optionalSolutionConfigurationName);
     }
 }

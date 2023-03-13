@@ -20,7 +20,7 @@ using System.Collections.Generic;
 
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
-    class TreeNodeVisibilityManager
+    internal class TreeNodeVisibilityManager
     {
         //---------------------------------------------------------------------------
         public void UpdateVisibility(RootCoverageTreeNode node, string filter)
@@ -29,36 +29,35 @@ namespace OpenCppCoverage.VSPackage.CoverageTree
             foreach (var module in node.Modules)
             {
                 var fileVisibilities = new List<FileVisibility>();
-                bool oneChildVisible = false;
+                var oneChildVisible = false;
 
                 module.EnsureLazyChildren();
                 foreach (var file in module.Files)
                 {
-                    bool newVisibility = NewVisibility(file, filter);
+                    var newVisibility = NewVisibility(file, filter);
                     oneChildVisible = oneChildVisible || newVisibility;
 
                     if (newVisibility != !file.IsHidden)
                         fileVisibilities.Add(new FileVisibility { File = file, Visibility = newVisibility });
                 }
                 module.IsHidden = !oneChildVisible && !NewVisibility(module, filter);
-                
-                if (!module.IsHidden)
-                {
-                    foreach (var fileVisibility in fileVisibilities)
-                        fileVisibility.File.IsHidden = !fileVisibility.Visibility;
-                }
+
+                if (module.IsHidden) continue;
+
+                foreach (var fileVisibility in fileVisibilities)
+                    fileVisibility.File.IsHidden = !fileVisibility.Visibility;
             }
         }
 
         //---------------------------------------------------------------------------
-        class FileVisibility
+        private class FileVisibility
         {
             public FileTreeNode File { get; set; }
             public bool Visibility { get; set; }
         }
 
         //---------------------------------------------------------------------------
-        static bool NewVisibility(SharpTreeNode node, string filter)
+        private static bool NewVisibility(SharpTreeNode node, string filter)
         {
             var text = (string)node.Text;
             return text.IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) >= 0;

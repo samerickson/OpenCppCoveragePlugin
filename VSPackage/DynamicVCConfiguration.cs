@@ -16,13 +16,13 @@
 
 namespace OpenCppCoverage.VSPackage
 {
-    class DynamicVCConfiguration
+    internal class DynamicVcConfiguration
     {
         //---------------------------------------------------------------------
-        public DynamicVCConfiguration(dynamic configuration)
+        public DynamicVcConfiguration(dynamic configuration)
         {
-            this.configuration_ = configuration;
-            this.DebugSettings = new DynamicVCDebugSettings(configuration_.DebugSettings);
+            this._configuration = configuration;
+            this.DebugSettings = new DynamicVcDebugSettings(_configuration.DebugSettings);
 
             var compilerTool = GetTool(configuration, "VCCLCompilerTool");
             if (compilerTool != null)
@@ -30,9 +30,9 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        static dynamic GetTool(dynamic configuration, string toolKindToFind)
+        private static dynamic GetTool(dynamic configuration, string toolKindToFind)
         {
-            foreach (dynamic tool in configuration.Tools)
+            foreach (var tool in configuration.Tools)
             {
                 if (tool.ToolKind == toolKindToFind)
                     return tool;
@@ -42,44 +42,26 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        public string ConfigurationName
-        {
-            get
-            {
-                return configuration_.ConfigurationName;
-            }
-        }
+        public string ConfigurationName => _configuration.ConfigurationName;
 
         //---------------------------------------------------------------------
-        public string PlatformName
-        {
-            get
-            {
-                return configuration_.Platform.Name;
-            }
-        }
+        public string PlatformName => _configuration.Platform.Name;
 
         //---------------------------------------------------------------------
         public string Evaluate(string str)
         {
-            return configuration_.Evaluate(str);
+            return _configuration.Evaluate(str);
         }
 
         //---------------------------------------------------------------------
-        public DynamicVCDebugSettings DebugSettings { get; }
+        public DynamicVcDebugSettings DebugSettings { get; }
 
         //---------------------------------------------------------------------
         public DynamicVCCLCompilerTool OptionalVCCLCompilerTool { get; }
 
         //---------------------------------------------------------------------
-        public string PrimaryOutput
-        {
-            get
-            {
-                return configuration_.PrimaryOutput;
-            }
-        }
+        public string PrimaryOutput => _configuration.PrimaryOutput;
 
-        readonly dynamic configuration_;
+        private readonly dynamic _configuration;
     }
 }

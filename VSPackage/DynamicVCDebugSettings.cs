@@ -16,42 +16,24 @@
 
 namespace OpenCppCoverage.VSPackage
 {
-    class DynamicVCDebugSettings
+    internal class DynamicVcDebugSettings
     {
         //---------------------------------------------------------------------
-        public DynamicVCDebugSettings(dynamic settings)
+        public DynamicVcDebugSettings(dynamic settings)
         {
-            settings_ = settings;
+            _settings = settings;
         }
 
         //---------------------------------------------------------------------
-        public string WorkingDirectory
-        {
-            get
-            {
-                return settings_.WorkingDirectory;
-            }
-        }
+        public string WorkingDirectory => _settings.WorkingDirectory;
 
         //---------------------------------------------------------------------
-        public string CommandArguments
-        {
-            get
-            {
-                return settings_.CommandArguments;
-            }
-        }
+        public string CommandArguments => _settings.CommandArguments;
 
         //---------------------------------------------------------------------
-        public string Command
-        {
-            get
-            {
-                return settings_.Command;
-            }
-        }
+        public string Command => _settings.Command;
 
 
-        readonly dynamic settings_;
+        private readonly dynamic _settings;
     }
 }

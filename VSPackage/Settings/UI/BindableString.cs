@@ -20,11 +20,10 @@ using System.Linq;
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
     /// <summary>
-    /// String cannot be bind directly in a datagrid.
+    /// String cannot be bind directly in a data grid.
     /// </summary>
-    class BindableString
+    internal class BindableString
     {
-        public BindableString() { }
         public BindableString(string value)
         {
             this.Value = value;
@@ -34,7 +33,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
     }
 
     //-------------------------------------------------------------------------
-    static class CollectionExtensions
+    internal static class CollectionExtensions
     {
         public static List<string> ToStringList(this IEnumerable<BindableString> collection)
         {

@@ -23,43 +23,38 @@ using System.Linq;
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
     //-------------------------------------------------------------------------
-    class ImportExportSettingController : PropertyChangedNotifier
+    internal class ImportExportSettingController : PropertyChangedNotifier
     {
         //---------------------------------------------------------------------
         public class Export : PropertyChangedNotifier
         {
-            ImportExportSettings.Type type;
-            string path;
+            private ImportExportSettings.Type _type;
+            private string _path;
 
             //-----------------------------------------------------------------
             public ImportExportSettings.Type Type
             {
-                get { return this.type; }
+                get => this._type;
                 set
                 {
                     // Reset path because it can be either a file or a folder.
-                    if (SetField(ref this.type, value))
+                    if (SetField(ref this._type, value))
                         this.Path = null;
                 }
             }
 
             //-----------------------------------------------------------------
-            public FileSystemSelectionControl.SelectionMode SelectionMode
-            {
-                get
-                {
-                    return (this.Type == ImportExportSettings.Type.Html) 
-                        ? FileSystemSelectionControl.SelectionMode.FolderSelection 
-                        : FileSystemSelectionControl.SelectionMode.NewFileSelection;
-                }
-            }
+            public FileSystemSelectionControl.SelectionMode SelectionMode =>
+                (this.Type == ImportExportSettings.Type.Html)
+                    ? FileSystemSelectionControl.SelectionMode.FolderSelection
+                    : FileSystemSelectionControl.SelectionMode.NewFileSelection;
 
             //-----------------------------------------------------------------
             public string FileFilter
             {
                 get
                 {
-                    switch (this.type)
+                    switch (this._type)
                     {
                         case ImportExportSettings.Type.Binary: return "Coverage Files (*.cov)|*.cov";
                         case ImportExportSettings.Type.Cobertura: return "Coverage Files (*.xml)|*.xml";
@@ -72,13 +67,12 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
             //-----------------------------------------------------------------
             public string Path
             {
-                get { return this.path; }
-                set { SetField(ref this.path, value); }
+                get => this._path; set => SetField(ref this._path, value);
             }
         }
 
         //---------------------------------------------------------------------
-        public class SettingsData: PropertyChangedNotifier
+        public class SettingsData : PropertyChangedNotifier
         {
             //-----------------------------------------------------------------
             public SettingsData()
@@ -92,19 +86,17 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
             public ObservableCollection<BindableString> InputCoverages { get; }
 
             //-----------------------------------------------------------------
-            bool coverChildrenProcesses;
+            private bool _coverChildrenProcesses;
             public bool CoverChildrenProcesses
             {
-                get { return this.coverChildrenProcesses; }
-                set { SetField(ref this.coverChildrenProcesses, value); }
+                get => this._coverChildrenProcesses; set => SetField(ref this._coverChildrenProcesses, value);
             }
 
             //-----------------------------------------------------------------
-            bool aggregateByFile;
+            private bool _aggregateByFile;
             public bool AggregateByFile
             {
-                get { return this.aggregateByFile; }
-                set { SetField(ref this.aggregateByFile, value); }
+                get => this._aggregateByFile; set => SetField(ref this._aggregateByFile, value);
             }
         }
 
@@ -117,11 +109,10 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         }
 
         //---------------------------------------------------------------------
-        SettingsData settings;
+        private SettingsData _settings;
         public SettingsData Settings
         {
-            get { return this.settings; }
-            private set { this.SetField(ref this.settings, value); }
+            get => this._settings; private set => this.SetField(ref this._settings, value);
         }
 
         //---------------------------------------------------------------------
@@ -151,7 +142,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
                 }),
                 InputCoverages = this.Settings.InputCoverages.ToStringList(),
                 AggregateByFile = this.Settings.AggregateByFile,
-                CoverChildrenProcesses = this.Settings.CoverChildrenProcesses  
+                CoverChildrenProcesses = this.Settings.CoverChildrenProcesses
             };
         }
 

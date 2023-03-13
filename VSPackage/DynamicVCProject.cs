@@ -18,39 +18,39 @@ using System.Collections.Generic;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class DynamicVCProject
+    internal class DynamicVcProject
     {
         //---------------------------------------------------------------------
-        public DynamicVCProject(dynamic project) 
+        public DynamicVcProject(dynamic project)
         {
-            project_ = project;
+            _project = project;
         }
 
         //---------------------------------------------------------------------
-        public List<DynamicVCConfiguration> Configurations
+        public List<DynamicVcConfiguration> Configurations
         {
             get
             {
-                var configurations = new List<DynamicVCConfiguration>();
-                foreach (var configuration in project_.Configurations)
-                    configurations.Add(new DynamicVCConfiguration(configuration));
+                var configurations = new List<DynamicVcConfiguration>();
+                foreach (var configuration in _project.Configurations)
+                    configurations.Add(new DynamicVcConfiguration(configuration));
 
                 return configurations;
             }
         }
 
         //---------------------------------------------------------------------
-        public List<DynamicVCFile> Files
+        public List<DynamicVcFile> Files
         {
             get
             {
-                var files = new List<DynamicVCFile>();
-                foreach (var file in project_.Files)
-                    files.Add(new DynamicVCFile(file));
+                var files = new List<DynamicVcFile>();
+                foreach (var file in _project.Files)
+                    files.Add(new DynamicVcFile(file));
                 return files;
             }
         }
 
-        readonly dynamic project_;
+        private readonly dynamic _project;
     }
 }

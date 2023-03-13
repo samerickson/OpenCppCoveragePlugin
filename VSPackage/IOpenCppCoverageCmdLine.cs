@@ -18,7 +18,7 @@ using OpenCppCoverage.VSPackage.Settings;
 
 namespace OpenCppCoverage.VSPackage
 {
-    interface IOpenCppCoverageCmdLine
+    internal interface IOpenCppCoverageCmdLine
     {
         string Build(MainSettings settings, string lineSeparator = " ");
     }

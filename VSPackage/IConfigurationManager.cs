@@ -18,14 +18,10 @@ using EnvDTE80;
 
 namespace OpenCppCoverage.VSPackage
 {
-    interface IConfigurationManager
+    internal interface IConfigurationManager
     {
-        DynamicVCConfiguration GetConfiguration(
-            SolutionConfiguration2 activeConfiguration, 
-            ExtendedProject project);
-        DynamicVCConfiguration FindConfiguration(
-            SolutionConfiguration2 activeConfiguration,
-            ExtendedProject project);
+        DynamicVcConfiguration GetConfiguration(SolutionConfiguration2 activeConfiguration, ExtendedProject project);
+        DynamicVcConfiguration FindConfiguration(SolutionConfiguration2 activeConfiguration, ExtendedProject project);
         string GetSolutionConfigurationName(SolutionConfiguration2 activeConfiguration);
     }
 }

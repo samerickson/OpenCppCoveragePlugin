@@ -50,10 +50,10 @@ namespace OpenCppCoverage.VSPackage
         Transient = true,
         Window = Microsoft.VisualStudio.Shell.Interop.ToolWindowGuids.Outputwindow)]
     [ProvideToolWindow(typeof(SettingToolWindow),
-        Style = Microsoft.VisualStudio.Shell.VsDockStyle.Float,
+        Style = VsDockStyle.Float,
         MultiInstances = false,
         Transient = true)]
-    [Guid(GuidList.guidVSPackagePkgString)]
+    [Guid(GuidList.GuidVsPackagePkgString)]
     [ProvideBindingPath]
     public sealed class OpenCppCoveragePackage : Package
     {
@@ -81,39 +81,37 @@ namespace OpenCppCoverage.VSPackage
         /// </summary>
         protected override void Initialize()
         {
-            Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
             var package = new PackageInterfaces(this, type => this.GetService(type));
             this.commandRunner = new CommandRunner(package, package);
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if ( null != mcs )
-            {
-                // Create the commands for the menu item.
-                this.AddCommand(
-                    PkgCmdIDList.RunOpenCppCoverageCommand, 
-                    (s, o) => this.commandRunner.RunCoverage(ProjectSelectionKind.StartUpProject), 
-                    mcs);
-                this.AddCommand(
-                    PkgCmdIDList.RunOpenCppCoverageSettingsCommand,
-                    (s, o) => this.commandRunner.OpenSettingsWindow(ProjectSelectionKind.StartUpProject),
-                    mcs);                
+            if (!(GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)) return;
 
-                this.AddCommand(
-                    PkgCmdIDList.RunOpenCppCoverageFromSelectedProjectCommand,
-                    (s, o) => this.commandRunner.RunCoverage(ProjectSelectionKind.SelectedProject), 
-                    mcs);
-                this.AddCommand(
-                    PkgCmdIDList.RunOpenCppCoverageFromSelectedProjectSettingsCommand,
-                    (s, o) => this.commandRunner.OpenSettingsWindow(ProjectSelectionKind.SelectedProject),
-                    mcs);
-                this.AddCommand(
-                    PkgCmdIDList.ShowCoverageTree,
-                    (s, o) => this.commandRunner.ShowCoverageTree(),
-                    mcs);
-            }
+            // Create the commands for the menu item.
+            AddCommand(
+                PkgCmdIDList.RunOpenCppCoverageCommand,
+                (s, o) => this.commandRunner.RunCoverage(ProjectSelectionKind.StartUpProject),
+                mcs);
+            AddCommand(
+                PkgCmdIDList.RunOpenCppCoverageSettingsCommand,
+                (s, o) => this.commandRunner.OpenSettingsWindow(ProjectSelectionKind.StartUpProject),
+                mcs);
+
+            AddCommand(
+                PkgCmdIDList.RunOpenCppCoverageFromSelectedProjectCommand,
+                (s, o) => this.commandRunner.RunCoverage(ProjectSelectionKind.SelectedProject),
+                mcs);
+            AddCommand(
+                PkgCmdIDList.RunOpenCppCoverageFromSelectedProjectSettingsCommand,
+                (s, o) => this.commandRunner.OpenSettingsWindow(ProjectSelectionKind.SelectedProject),
+                mcs);
+            AddCommand(
+                PkgCmdIDList.ShowCoverageTree,
+                (s, o) => this.commandRunner.ShowCoverageTree(),
+                mcs);
         }
 
         //---------------------------------------------------------------------
@@ -124,13 +122,13 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        void AddCommand(uint commandId, EventHandler eventHandler, OleMenuCommandService mcs)
+        static void AddCommand(uint commandId, EventHandler eventHandler, OleMenuCommandService mcs)
         {
-            var menuCommandID = new CommandID(GuidList.guidVSPackageCmdSet, (int)commandId);
-            var menuItem = new MenuCommand(eventHandler, menuCommandID);
+            var menuCommandId = new CommandID(GuidList.GuidVsPackageCmdSet, (int)commandId);
+            var menuItem = new MenuCommand(eventHandler, menuCommandId);
             mcs.AddCommand(menuItem);
         }
 
-        #endregion       
+        #endregion
     }
 }

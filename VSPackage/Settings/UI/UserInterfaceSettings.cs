@@ -16,7 +16,7 @@
 
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
-    class UserInterfaceSettings
+    internal class UserInterfaceSettings
     {
         public BasicSettingController.SettingsData BasicSettingController { get; set; }
 

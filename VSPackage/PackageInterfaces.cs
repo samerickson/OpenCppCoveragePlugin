@@ -27,8 +27,8 @@ namespace OpenCppCoverage.VSPackage
     /// VS 15)
     /// Note: We use a lambda for GetService because Package.GetService is protected.
     /// </summary>
-    class PackageInterfaces : IServiceProvider, IWindowFinder
-    {        
+    internal class PackageInterfaces : IServiceProvider, IWindowFinder
+    {
         readonly Package package;
         readonly Func<Type, object> getService;
 
@@ -43,9 +43,10 @@ namespace OpenCppCoverage.VSPackage
         public T FindToolWindow<T>() where T : ToolWindowPane
         {
             var type = typeof(T);
-            var window = this.package.FindToolWindow(type, 0, true) as T;
-            if (window == null || window.Frame == null)
+
+            if (!(this.package.FindToolWindow(type, 0, true) is T window) || window.Frame == null)
                 throw new NotSupportedException("Cannot create window " + type.Name);
+
             return window;
         }
 

@@ -22,7 +22,7 @@ namespace OpenCppCoverage.VSPackage.CoverageRateBuilder
     //-------------------------------------------------------------------------
     public class BaseCoverage
     {
-        protected BaseCoverage() {}
+        protected BaseCoverage() { }
         public int CoverLineCount { get; protected set; }
         public int TotalLineCount { get; protected set; }
     }
@@ -30,31 +30,25 @@ namespace OpenCppCoverage.VSPackage.CoverageRateBuilder
     //-------------------------------------------------------------------------
     public class HierarchicalCoverage<T> : BaseCoverage where T : BaseCoverage
     {
-        readonly List<T> children;
+        private readonly List<T> _children;
 
         //---------------------------------------------------------------------
         public HierarchicalCoverage(string name)
         {
             this.Name = name;
-            this.children = new List<T>();
+            this._children = new List<T>();
         }
 
         //---------------------------------------------------------------------
         public string Name { get; }
 
         //---------------------------------------------------------------------
-        public IEnumerable<T> Children
-        {
-            get
-            {
-                return this.children;
-            }
-        }
+        public IEnumerable<T> Children => this._children;
 
         //---------------------------------------------------------------------
         public void AddChild(T child)
         {
-            this.children.Add(child);
+            this._children.Add(child);
             this.CoverLineCount += child.CoverLineCount;
             this.TotalLineCount += child.TotalLineCount;
         }
@@ -69,7 +63,7 @@ namespace OpenCppCoverage.VSPackage.CoverageRateBuilder
             this.HasBeenExecuted = hasBeenExecuted;
         }
 
-        public int LineNumber { get;  }
+        public int LineNumber { get; }
         public bool HasBeenExecuted { get; }
     }
 
@@ -77,9 +71,9 @@ namespace OpenCppCoverage.VSPackage.CoverageRateBuilder
     public class FileCoverage : BaseCoverage
     {
         //---------------------------------------------------------------------
-        public FileCoverage(string path, List<LineCoverage> lineCoverages )
+        public FileCoverage(string path, IReadOnlyCollection<LineCoverage> lineCoverages)
         {
-            this.CoverLineCount = lineCoverages.Where(l => l.HasBeenExecuted).Count();
+            this.CoverLineCount = lineCoverages.Count(l => l.HasBeenExecuted);
             this.TotalLineCount = lineCoverages.Count;
             this.Path = path;
             this.LineCoverages = lineCoverages;
@@ -101,8 +95,7 @@ namespace OpenCppCoverage.VSPackage.CoverageRateBuilder
     //-------------------------------------------------------------------------
     public class CoverageRate : HierarchicalCoverage<ModuleCoverage>
     {
-        public CoverageRate(string name, int exitCode) 
-            : base(name)
+        public CoverageRate(string name, int exitCode) : base(name)
         {
             this.ExitCode = exitCode;
         }

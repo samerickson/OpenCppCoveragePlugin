@@ -22,9 +22,9 @@ using System.Runtime.InteropServices;
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
     [Guid("1305E50A-2B2B-4168-83A7-0D57ED1EF76A")]
-    class SettingToolWindow : ToolWindowPane, IVsExtensibleObject, IVsWindowFrameNotify2
+    internal sealed class SettingToolWindow : ToolWindowPane, IVsExtensibleObject, IVsWindowFrameNotify2
     {
-        readonly MainSettingControl mainSettingControl;
+        private readonly MainSettingControl _mainSettingControl;
 
         //---------------------------------------------------------------------
         public static readonly string WindowCaption = "Settings";
@@ -33,14 +33,14 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         public SettingToolWindow() : base(null)
         {
             this.Caption = WindowCaption;
-            this.mainSettingControl = new MainSettingControl();
+            this._mainSettingControl = new MainSettingControl();
 
-            // This is the user control hosted by the tool window; 
+            // This is the user control hosted by the tool window;
             // Note that, even if this class implements IDisposable,
-            // we are not calling Dispose on this object. 
+            // we are not calling Dispose on this object.
             // This is because ToolWindowPane calls Dispose on
-            // the object returned by the Content property.            
-            this.Content = this.mainSettingControl;
+            // the object returned by the Content property.
+            this.Content = this._mainSettingControl;
         }
 
         //---------------------------------------------------------------------
@@ -50,7 +50,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
                 this.Controller.CloseWindowEvent -= Close;
 
             this.Controller = controller;
-            this.mainSettingControl.DataContext = this.Controller;
+            this._mainSettingControl.DataContext = this.Controller;
             this.Controller.CloseWindowEvent += Close;
         }
 
@@ -65,7 +65,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         }
 
         //---------------------------------------------------------------------
-        void Close(object sender, EventArgs e)
+        private void Close(object sender, EventArgs e)
         {
             var frame = (IVsWindowFrame)this.Frame;
             frame.CloseFrame((uint)__FRAMECLOSE.FRAMECLOSE_NoSave);

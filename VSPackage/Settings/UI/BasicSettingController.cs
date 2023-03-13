@@ -25,7 +25,7 @@ using System.Linq;
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
     //-------------------------------------------------------------------------
-    class SelectableProject
+    internal class SelectableProject
     {
         //---------------------------------------------------------------------
         public SelectableProject(StartUpProjectSettings.CppProject project)
@@ -53,68 +53,62 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
     }
 
     //-------------------------------------------------------------------------
-    class BasicSettingController: PropertyChangedNotifier
+    internal class BasicSettingController : PropertyChangedNotifier
     {
         public class BasicSettingsData : PropertyChangedNotifier
         {
             //---------------------------------------------------------------------
-            string programToRun;
+            private string _programToRun;
             public string ProgramToRun
             {
-                get { return this.programToRun; }
-                set { this.SetField(ref this.programToRun, value); }
+                get => this._programToRun; set => this.SetField(ref this._programToRun, value);
             }
 
             //---------------------------------------------------------------------
-            string optionalWorkingDirectory;
+            private string _optionalWorkingDirectory;
 
             public string OptionalWorkingDirectory
             {
-                get { return this.optionalWorkingDirectory; }
-                set { this.SetField(ref this.optionalWorkingDirectory, value); }
+                get => this._optionalWorkingDirectory; set => this.SetField(ref this._optionalWorkingDirectory, value);
             }
 
             //---------------------------------------------------------------------
-            string arguments;
+            private string _arguments;
             public string Arguments
             {
-                get { return this.arguments; }
-                set { this.SetField(ref this.arguments, value); }
+                get => this._arguments; set => this.SetField(ref this._arguments, value);
             }
 
             //---------------------------------------------------------------------
-            bool compileBeforeRunning;
+            private bool _compileBeforeRunning;
             public bool CompileBeforeRunning
             {
-                get { return this.compileBeforeRunning; }
-                set { this.SetField(ref this.compileBeforeRunning, value); }
+                get => this._compileBeforeRunning; set => this.SetField(ref this._compileBeforeRunning, value);
             }
 
             //---------------------------------------------------------------------
-            bool optimizedBuild;
+            private bool _optimizedBuild;
             public bool OptimizedBuild
             {
-                get { return this.optimizedBuild; }
-                set { this.SetField(ref this.optimizedBuild, value); }
+                get => this._optimizedBuild; set => this.SetField(ref this._optimizedBuild, value);
             }
         }
 
         //---------------------------------------------------------------------
         public static string None = "None";
-        private bool isAllSelected = true;
+        private bool _isAllSelected = true;
         //---------------------------------------------------------------------
         public BasicSettingController()
         {
             this.SelectableProjects = new List<SelectableProject>();
-            this.ToggleSelectAllCommand = new RelayCommand(() => OnToggleSelectAll());
+            this.ToggleSelectAllCommand = new RelayCommand(OnToggleSelectAll);
             this.BasicSettings = new BasicSettingsData();
         }
         //---------------------------------------------------------------------
-        BasicSettingsData basicSettings;
+        private BasicSettingsData _basicSettings;
         public BasicSettingsData BasicSettings
         {
-            get { return this.basicSettings; }
-            private set { this.SetField(ref this.basicSettings, value); }
+            get => this._basicSettings; private set => this.SetField(ref this._basicSettings, value);
         }
 
         //---------------------------------------------------------------------
@@ -124,7 +118,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
                 project => new SelectableProject(project)).ToList();
             this.BasicSettings.ProgramToRun = settings.Command;
 
-            if (String.IsNullOrEmpty(settings.WorkingDir))
+            if (string.IsNullOrEmpty(settings.WorkingDir))
                 this.HasWorkingDirectory = false;
             else
             {
@@ -134,13 +128,9 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
 
             this.BasicSettings.Arguments = settings.Arguments;
             this.BasicSettings.OptimizedBuild = settings.IsOptimizedBuildEnabled;
-            this.EnvironmentVariables = settings.EnvironmentVariables;
+            this.EnvironmentVariables = settings.EnvironmentVariables ?? new List<KeyValuePair<string, string>>();
 
-            if (this.EnvironmentVariables == null)
-                this.EnvironmentVariables = new List<KeyValuePair<string, string>>();
-
-            if (String.IsNullOrEmpty(settings.ProjectName) 
-             || String.IsNullOrEmpty(settings.SolutionConfigurationName))
+            if (string.IsNullOrEmpty(settings.ProjectName) || string.IsNullOrEmpty(settings.SolutionConfigurationName))
             {
                 this.CurrentProject = None;
                 this.CurrentConfiguration = None;
@@ -179,10 +169,8 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
                     project.IsSelected = isSelected;
             }
             this.HasWorkingDirectory = !string.IsNullOrEmpty(this.BasicSettings.OptionalWorkingDirectory);
-            if (!this.IsCompileBeforeRunningEnabled)
-                this.BasicSettings.CompileBeforeRunning = false;
-            if (!this.IsOptimizedBuildCheckBoxEnabled)
-                this.BasicSettings.OptimizedBuild = false;
+            if (!this.IsCompileBeforeRunningEnabled) this.BasicSettings.CompileBeforeRunning = false;
+            if (!this.IsOptimizedBuildCheckBoxEnabled) this.BasicSettings.OptimizedBuild = false;
         }
 
         //---------------------------------------------------------------------
@@ -191,7 +179,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
             return new SettingsData
             {
                 Data = this.BasicSettings,
-                IsSelectedByProjectPath = this.selectableProjects.ToDictionary(p => p.FullName, p => p.IsSelected)
+                IsSelectedByProjectPath = this._selectableProjects.ToDictionary(p => p.FullName, p => p.IsSelected)
             };
         }
 
@@ -218,18 +206,18 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         }
 
         //---------------------------------------------------------------------
-        List<SelectableProject> selectableProjects;
+        private List<SelectableProject> _selectableProjects;
         public List<SelectableProject> SelectableProjects
         {
-            get { return this.selectableProjects; }
-            private set { this.SetField(ref this.selectableProjects, value); }
+            get => this._selectableProjects;
+            private set => this.SetField(ref this._selectableProjects, value);
         }
 
         //---------------------------------------------------------------------
         bool hasWorkingDirectory;
         public bool HasWorkingDirectory
         {
-            get { return this.hasWorkingDirectory; }
+            get => this.hasWorkingDirectory;
             set
             {
                 if (this.SetField(ref this.hasWorkingDirectory, value) && !value)
@@ -237,68 +225,61 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
             }
         }
         //---------------------------------------------------------------------
-        bool isCompileBeforeRunningEnabled;
+        private bool _isCompileBeforeRunningEnabled;
         public bool IsCompileBeforeRunningEnabled
         {
-            get { return this.isCompileBeforeRunningEnabled; }
-            set { this.SetField(ref this.isCompileBeforeRunningEnabled, value); }
+            get => this._isCompileBeforeRunningEnabled; set => this.SetField(ref this._isCompileBeforeRunningEnabled, value);
         }
 
         //---------------------------------------------------------------------
-        string compileBeforeRunningToolTip;
+        private string _compileBeforeRunningToolTip;
         public string CompileBeforeRunningToolTip
         {
-            get { return this.compileBeforeRunningToolTip; }
-            set { this.SetField(ref this.compileBeforeRunningToolTip, value); }
+            get => this._compileBeforeRunningToolTip; set => this.SetField(ref this._compileBeforeRunningToolTip, value);
         }
 
         //---------------------------------------------------------------------
-        bool isOptimizedBuildCheckBoxEnabled;
+        private bool _isOptimizedBuildCheckBoxEnabled;
         public bool IsOptimizedBuildCheckBoxEnabled
         {
-            get { return this.isOptimizedBuildCheckBoxEnabled; }
-            set { this.SetField(ref this.isOptimizedBuildCheckBoxEnabled, value); }
+            get => this._isOptimizedBuildCheckBoxEnabled; set => this.SetField(ref this._isOptimizedBuildCheckBoxEnabled, value);
         }
 
         //---------------------------------------------------------------------
-        string optimizedBuildToolTip;
+        private string _optimizedBuildToolTip;
         public string OptimizedBuildToolTip
         {
-            get { return this.optimizedBuildToolTip; }
-            set { this.SetField(ref this.optimizedBuildToolTip, value); }
+            get => this._optimizedBuildToolTip; set => this.SetField(ref this._optimizedBuildToolTip, value);
         }
 
         //---------------------------------------------------------------------
-        string currentProject;
+        private string _currentProject;
         public string CurrentProject
         {
-            get { return this.currentProject; }
-            set { this.SetField(ref this.currentProject, value); }
+            get => this._currentProject; set => this.SetField(ref this._currentProject, value);
         }
 
         //---------------------------------------------------------------------
-        string currentConfiguration;
+        private string _currentConfiguration;
         public string CurrentConfiguration
         {
-            get { return this.currentConfiguration; }
-            set { this.SetField(ref this.currentConfiguration, value); }
+            get => this._currentConfiguration;
+            set => this.SetField(ref this._currentConfiguration, value);
         }
 
         //---------------------------------------------------------------------
-        string GetWorkingDirectory()
+        private string GetWorkingDirectory()
         {
-            if (!string.IsNullOrWhiteSpace(this.BasicSettings.OptionalWorkingDirectory))
-                return this.BasicSettings.OptionalWorkingDirectory;
-            return Path.GetDirectoryName(this.BasicSettings.ProgramToRun);
+            return !string.IsNullOrWhiteSpace(this.BasicSettings.OptionalWorkingDirectory) ? this.BasicSettings.OptionalWorkingDirectory : Path.GetDirectoryName(this.BasicSettings.ProgramToRun);
         }
 
         //---------------------------------------------------------------------
-        void OnToggleSelectAll()
+        private void OnToggleSelectAll()
         {
-            this.isAllSelected = !this.isAllSelected;
-            foreach (SelectableProject project in this.SelectableProjects)
+            this._isAllSelected = !this._isAllSelected;
+            foreach (var project in this.SelectableProjects)
             {
-                project.IsSelected = this.isAllSelected;
+                project.IsSelected = this._isAllSelected;
             }
             this.SelectableProjects = new List<SelectableProject>(this.SelectableProjects);
         }

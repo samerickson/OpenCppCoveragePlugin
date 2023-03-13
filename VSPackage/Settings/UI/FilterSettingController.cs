@@ -20,7 +20,7 @@ using System.Collections.ObjectModel;
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
     //-------------------------------------------------------------------------
-    class FilterSettingController: PropertyChangedNotifier
+    internal class FilterSettingController : PropertyChangedNotifier
     {
         //---------------------------------------------------------------------
         public class SettingsData
@@ -49,11 +49,10 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         }
 
         //---------------------------------------------------------------------
-        SettingsData settings;
+        private SettingsData _settings;
         public SettingsData Settings
         {
-            get { return this.settings; }
-            private set { this.SetField(ref this.settings, value); }
+            get => this._settings; private set => this.SetField(ref this._settings, value);
         }
 
         //---------------------------------------------------------------------

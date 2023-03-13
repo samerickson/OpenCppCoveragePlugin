@@ -23,41 +23,37 @@ using System.Windows.Input;
 namespace OpenCppCoverage.VSPackage.Settings.UI
 {
     //-------------------------------------------------------------------------
-    class MainSettingController : PropertyChangedNotifier
+    internal class MainSettingController : PropertyChangedNotifier
     {
-        readonly IOpenCppCoverageCmdLine openCppCoverageCmdLine;
-        readonly ISettingsStorage settingsStorage;
-        readonly CoverageRunner coverageRunner;
-        readonly IStartUpProjectSettingsBuilder startUpProjectSettingsBuilder;
+        private readonly IOpenCppCoverageCmdLine _openCppCoverageCmdLine;
+        private readonly ISettingsStorage _settingsStorage;
+        private readonly CoverageRunner _coverageRunner;
+        private readonly IStartUpProjectSettingsBuilder _startUpProjectSettingsBuilder;
 
-        string selectedProjectPath;
-        string solutionConfigurationName;
-        bool displayProgramOutput;
-        ProjectSelectionKind kind;
+        private string _selectedProjectPath;
+        private string _solutionConfigurationName;
+        private bool _displayProgramOutput;
+        private ProjectSelectionKind _kind;
 
         //---------------------------------------------------------------------
-        public MainSettingController(
-            ISettingsStorage settingsStorage,
-            IOpenCppCoverageCmdLine openCppCoverageCmdLine,
-            IStartUpProjectSettingsBuilder startUpProjectSettingsBuilder,
-            CoverageRunner coverageRunner)
+        public MainSettingController(ISettingsStorage settingsStorage, IOpenCppCoverageCmdLine openCppCoverageCmdLine, IStartUpProjectSettingsBuilder startUpProjectSettingsBuilder, CoverageRunner coverageRunner)
         {
-            this.settingsStorage = settingsStorage;
-            this.openCppCoverageCmdLine = openCppCoverageCmdLine;
-            this.RunCoverageCommand = new RelayCommand(() => OnRunCoverageCommand());
+            this._settingsStorage = settingsStorage;
+            this._openCppCoverageCmdLine = openCppCoverageCmdLine;
+            this.RunCoverageCommand = new RelayCommand(OnRunCoverageCommand);
             this.CloseCommand = new RelayCommand(() =>
             {
                 this.CloseWindowEvent?.Invoke(this, EventArgs.Empty);
             });
             this.ResetToDefaultCommand = new RelayCommand(
-                () => UpdateStartUpProject(ComputeStartUpProjectSettings(kind)));
+                () => UpdateStartUpProject(ComputeStartUpProjectSettings(_kind)));
             this.BasicSettingController = new BasicSettingController();
             this.FilterSettingController = new FilterSettingController();
             this.ImportExportSettingController = new ImportExportSettingController();
             this.MiscellaneousSettingController = new MiscellaneousSettingController();
 
-            this.coverageRunner = coverageRunner;
-            this.startUpProjectSettingsBuilder = startUpProjectSettingsBuilder;
+            this._coverageRunner = coverageRunner;
+            this._startUpProjectSettingsBuilder = startUpProjectSettingsBuilder;
         }
 
         //---------------------------------------------------------------------
@@ -65,30 +61,29 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         {
             var settings = ComputeStartUpProjectSettings(kind);
             this.UpdateStartUpProject(settings);
-            this.selectedProjectPath = settings.ProjectPath;
-            this.displayProgramOutput = displayProgramOutput;
-            this.solutionConfigurationName = settings.SolutionConfigurationName;
-            this.kind = kind;
+            this._selectedProjectPath = settings.ProjectPath;
+            this._displayProgramOutput = displayProgramOutput;
+            this._solutionConfigurationName = settings.SolutionConfigurationName;
+            this._kind = kind;
 
-            var uiSettings = this.settingsStorage.TryLoad(this.selectedProjectPath, this.solutionConfigurationName);
+            var uiSettings = this._settingsStorage.TryLoad(this._selectedProjectPath, this._solutionConfigurationName);
 
-            if (uiSettings != null)
-            {
-                this.BasicSettingController.UpdateSettings(uiSettings.BasicSettingController);
-                this.FilterSettingController.UpdateSettings(uiSettings.FilterSettingController);
-                this.ImportExportSettingController.UpdateSettings(uiSettings.ImportExportSettingController);
-                this.MiscellaneousSettingController.UpdateSettings(uiSettings.MiscellaneousSettingController);
-            }
+            if (uiSettings == null) return;
+
+            this.BasicSettingController.UpdateSettings(uiSettings.BasicSettingController);
+            this.FilterSettingController.UpdateSettings(uiSettings.FilterSettingController);
+            this.ImportExportSettingController.UpdateSettings(uiSettings.ImportExportSettingController);
+            this.MiscellaneousSettingController.UpdateSettings(uiSettings.MiscellaneousSettingController);
         }
 
         //---------------------------------------------------------------------
-        StartUpProjectSettings ComputeStartUpProjectSettings(ProjectSelectionKind kind)
+        private StartUpProjectSettings ComputeStartUpProjectSettings(ProjectSelectionKind kind)
         {
-            return this.startUpProjectSettingsBuilder.ComputeSettings(kind);
+            return this._startUpProjectSettingsBuilder.ComputeSettings(kind);
         }
 
         //---------------------------------------------------------------------
-        void UpdateStartUpProject(StartUpProjectSettings settings)
+        private void UpdateStartUpProject(StartUpProjectSettings settings)
         {
             this.BasicSettingController.UpdateStartUpProject(settings);
             this.FilterSettingController.UpdateStartUpProject();
@@ -106,7 +101,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
                 ImportExportSettingController = this.ImportExportSettingController.Settings,
                 MiscellaneousSettingController = this.MiscellaneousSettingController.Settings
             };
-            this.settingsStorage.Save(this.selectedProjectPath, this.solutionConfigurationName, uiSettings);
+            this._settingsStorage.Save(this._selectedProjectPath, this._solutionConfigurationName, uiSettings);
         }
 
         //---------------------------------------------------------------------
@@ -118,7 +113,7 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
                 FilterSettings = this.FilterSettingController.GetSettings(),
                 ImportExportSettings = this.ImportExportSettingController.GetSettings(),
                 MiscellaneousSettings = this.MiscellaneousSettingController.GetSettings(),
-                DisplayProgramOutput = this.displayProgramOutput
+                DisplayProgramOutput = this._displayProgramOutput
             };
         }
 
@@ -129,11 +124,10 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         public MiscellaneousSettingController MiscellaneousSettingController { get; }
 
         //---------------------------------------------------------------------
-        string commandLineText;
+        private string _commandLineText;
         public string CommandLineText
         {
-            get { return this.commandLineText; }
-            private set { this.SetField(ref this.commandLineText, value); }
+            get => this._commandLineText; private set => this.SetField(ref this._commandLineText, value);
         }
 
         //---------------------------------------------------------------------
@@ -143,23 +137,21 @@ namespace OpenCppCoverage.VSPackage.Settings.UI
         {
             set
             {
-                if (value != null && (string)value.Header == CommandLineHeader)
+                if (value == null || (string)value.Header != CommandLineHeader) return;
+                try
                 {
-                    try
-                    {
-                        this.CommandLineText = this.openCppCoverageCmdLine.Build(this.GetMainSettings(), "\n");
-                    } 
-                    catch (Exception e)
-                    {
-                        this.CommandLineText = e.Message;
-                    }
+                    this.CommandLineText = this._openCppCoverageCmdLine.Build(this.GetMainSettings(), "\n");
+                }
+                catch (Exception e)
+                {
+                    this.CommandLineText = e.Message;
                 }
             }
         }
         //---------------------------------------------------------------------
-        void OnRunCoverageCommand()
+        private void OnRunCoverageCommand()
         {
-            this.coverageRunner.RunCoverageOnStartupProject(this.GetMainSettings());
+            this._coverageRunner.RunCoverageOnStartupProject(this.GetMainSettings());
         }
 
         //---------------------------------------------------------------------

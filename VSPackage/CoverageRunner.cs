@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class CoverageRunner
+    internal class CoverageRunner
     {
         //---------------------------------------------------------------------
         public static readonly string BuilderFailedMsg = "Build failed.";
@@ -69,29 +69,29 @@ namespace OpenCppCoverage.VSPackage
         //---------------------------------------------------------------------
         public void RunCoverageOnStartupProject(MainSettings settings)
         {
-           this.errorHandler.Execute(() =>
-           {
-               var basicSettings = settings.BasicSettings;
-               if (basicSettings.CompileBeforeRunning)
-               {
-                   projectBuilder.Build(basicSettings.SolutionConfigurationName, basicSettings.ProjectName,
-                       compilationSuccess =>
-                       {
-                           if (!compilationSuccess)
-                               throw new VSPackageException(BuilderFailedMsg);
+            this.errorHandler.Execute(() =>
+            {
+                var basicSettings = settings.BasicSettings;
+                if (basicSettings.CompileBeforeRunning)
+                {
+                    projectBuilder.Build(basicSettings.SolutionConfigurationName, basicSettings.ProjectName,
+                        compilationSuccess =>
+                        {
+                            if (!compilationSuccess)
+                                throw new VSPackageException(BuilderFailedMsg);
 
-                           RunCoverage(settings);
-                       });
-               }
-               else
-               {
-                   RunCoverage(settings);
-               }
-           });
+                            RunCoverage(settings);
+                        });
+                }
+                else
+                {
+                    RunCoverage(settings);
+                }
+            });
         }
 
         //---------------------------------------------------------------------
-        void RunCoverage(MainSettings settings)
+        private void RunCoverage(MainSettings settings)
         {
             outputWindowWriter.ActivatePane();
             outputWindowWriter.WriteLine("Start computing code coverage...");
@@ -115,15 +115,11 @@ namespace OpenCppCoverage.VSPackage
                 throw;
             }
 
-            onCoverageFinished.ContinueWith(task => 
-                OnCoverageFinishedAsync(task, coveragePath, onCoverageFinished).Wait());
+            onCoverageFinished.ContinueWith(task => OnCoverageFinishedAsync(task, coveragePath).Wait());
         }
 
         //---------------------------------------------------------------------
-        System.Threading.Tasks.Task OnCoverageFinishedAsync(
-            System.Threading.Tasks.Task onCoverageFinished,
-            TemporaryFile coveragePath,
-            System.Threading.Tasks.Task avoidGCCollect)
+        private System.Threading.Tasks.Task OnCoverageFinishedAsync(System.Threading.Tasks.Task onCoverageFinished, TemporaryFile coveragePath)
         {
             return errorHandler.ExecuteAsync(async () =>
             {
@@ -144,14 +140,14 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        void OnCoverageRateBuilt(CoverageRate coverageRate, string coveragePath)
+        private void OnCoverageRateBuilt(CoverageRate coverageRate, string coveragePath)
         {
             if (coverageRate == null)
             {
                 outputWindowWriter.WriteLine("The execution of the previous line failed." +
-                    " Please execute the previous line in a promt" + 
+                    " Please execute the previous line in a promt" +
                     " command to have more information about the issue.");
-                throw new VSPackageException("Cannot generate coverage. See output pane for more information");                
+                throw new VSPackageException("Cannot generate coverage. See output pane for more information");
             }
             outputWindowWriter.WriteLine("Coverage written in " + coveragePath);
 
@@ -159,9 +155,9 @@ namespace OpenCppCoverage.VSPackage
             this.coverageViewManager.CoverageRate = coverageRate;
         }
 
-        //---------------------------------------------------------------------        
-        void AddBinaryOutput(
-            ImportExportSettings importExportSettings, 
+        //---------------------------------------------------------------------
+        static void AddBinaryOutput(
+            ImportExportSettings importExportSettings,
             TemporaryFile coveragePath)
         {
             var exports = importExportSettings.Exports.ToList();
@@ -173,10 +169,10 @@ namespace OpenCppCoverage.VSPackage
             importExportSettings.Exports = exports;
         }
 
-        //---------------------------------------------------------------------        
-        CoverageRate BuildCoverageRate(string coveragePath)
+        //---------------------------------------------------------------------
+        private CoverageRate BuildCoverageRate(string coveragePath)
         {
-            using (var stream = new FileStream(coveragePath.ToString(), FileMode.Open))
+            using (var stream = new FileStream(coveragePath, FileMode.Open))
             {
                 var coverageResult = this.coverageDataDeserializer.Deserialize(stream);
                 var coverageRateBuilder = new CoverageRateBuilder.CoverageRateBuilder();

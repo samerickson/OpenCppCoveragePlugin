@@ -20,14 +20,14 @@ using System.Text;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class CommandLineBuilder
+    internal class CommandLineBuilder
     {
-        readonly List<string> commandLines = new List<string>();
-        
+        private readonly List<string> _commandLines = new List<string>();
+
         //---------------------------------------------------------------------
         public string GetCommandLine(string separator = " ")
         {
-            return String.Join(separator, this.commandLines);
+            return string.Join(separator, this._commandLines);
         }
 
         //---------------------------------------------------------------------
@@ -38,14 +38,14 @@ namespace OpenCppCoverage.VSPackage
             var line = argumentName;
             if (optionalArgumentValue != null)
                 line += ' ' + EscapeValue(optionalArgumentValue);
-            commandLines.Add(line);
+            _commandLines.Add(line);
             return this;
         }
 
         //---------------------------------------------------------------------
         public CommandLineBuilder Append(string str)
         {
-            commandLines.Add(str);
+            _commandLines.Add(str);
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace OpenCppCoverage.VSPackage
         public static string EscapeValue(string str)
         {
             var builder = new StringBuilder();
-            int consecutiveBackSlashCount = 0;
+            var consecutiveBackSlashCount = 0;
 
             builder.Append('\"');
             foreach (var c in str)
@@ -63,7 +63,7 @@ namespace OpenCppCoverage.VSPackage
                 else
                 {
                     // Back slash before quote need to be escaped
-                    // so add the same number of back slash. 
+                    // so add the same number of back slash.
                     builder.Append('\\', consecutiveBackSlashCount);
 
                     // Quote need to be escaped too.
@@ -78,5 +78,5 @@ namespace OpenCppCoverage.VSPackage
 
             return builder.ToString();
         }
-    }   
+    }
 }

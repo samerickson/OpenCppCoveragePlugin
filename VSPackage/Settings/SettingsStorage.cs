@@ -17,10 +17,11 @@
 using Newtonsoft.Json;
 using OpenCppCoverage.VSPackage.Settings.UI;
 using System.IO;
+using System.Linq;
 
 namespace OpenCppCoverage.VSPackage.Settings
 {
-    class SettingsStorage: ISettingsStorage
+    internal class SettingsStorage : ISettingsStorage
     {
         readonly string applicationDataFolder;
 
@@ -31,10 +32,7 @@ namespace OpenCppCoverage.VSPackage.Settings
         }
 
         //---------------------------------------------------------------------
-        public string Save(
-            string optionalProjectPath, 
-            string optionalSolutionConfigurationName, 
-            UserInterfaceSettings settings)
+        public string Save(string optionalProjectPath, string optionalSolutionConfigurationName, UserInterfaceSettings settings)
         {
             var json = JsonConvert.SerializeObject(settings);
             this.CreateConfigfolder(optionalProjectPath);
@@ -75,7 +73,7 @@ namespace OpenCppCoverage.VSPackage.Settings
         }
 
         //---------------------------------------------------------------------
-        void CreateConfigfolder(string optionalProjectPath)
+        private void CreateConfigfolder(string optionalProjectPath)
         {
             var folder = this.GetConfigFolder(optionalProjectPath);
             Directory.CreateDirectory(folder);
@@ -86,36 +84,17 @@ namespace OpenCppCoverage.VSPackage.Settings
         public static string NoProjectConfigName { get; } = "config";
 
         //---------------------------------------------------------------------
-        string GetConfigFolder(string optionalProjectPath)
+        private string GetConfigFolder(string optionalProjectPath)
         {
-            if (optionalProjectPath != null)
-            {
-                return Path.Combine(
-                    Path.GetDirectoryName(optionalProjectPath),
-                    OpenCppCov,
-                    Path.GetFileNameWithoutExtension(optionalProjectPath));            
-            }
-
-            return Path.Combine(this.applicationDataFolder, ApplicationDataSection);
+            return optionalProjectPath != null ? Path.Combine(Path.GetDirectoryName(optionalProjectPath) ?? string.Empty, OpenCppCov, Path.GetFileNameWithoutExtension(optionalProjectPath)) : Path.Combine(this.applicationDataFolder, ApplicationDataSection);
         }
 
         //---------------------------------------------------------------------
-        string GetConfigPath(string optionalProjectPath, string optionalSolutionConfigurationName)
+        public string GetConfigPath(string optionalProjectPath, string optionalSolutionConfigurationName)
         {
             var folder = this.GetConfigFolder(optionalProjectPath);
-            string filename;
 
-            if (optionalSolutionConfigurationName != null)
-            {
-                filename = optionalSolutionConfigurationName;
-
-                foreach (var c in Path.GetInvalidFileNameChars())
-                    filename = filename.Replace(c, '_');
-            }
-            else
-            {
-                filename = NoProjectConfigName;
-            }
+            var filename = optionalSolutionConfigurationName != null ? Path.GetInvalidFileNameChars().Aggregate(optionalSolutionConfigurationName, (current, c) => current.Replace(c, '_')) : NoProjectConfigName;
             return Path.Combine(folder, filename + ".json");
         }
     }

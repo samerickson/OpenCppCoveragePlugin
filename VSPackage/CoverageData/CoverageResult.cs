@@ -18,11 +18,9 @@ using System.Collections.Generic;
 
 namespace OpenCppCoverage.VSPackage.CoverageData
 {
-    class CoverageResult
+    internal class CoverageResult
     {
-        public CoverageResult(
-            ProtoBuff.CoverageData coverageData, 
-            IEnumerable<ProtoBuff.ModuleCoverage> modules)
+        public CoverageResult(ProtoBuff.CoverageData coverageData, IEnumerable<ProtoBuff.ModuleCoverage> modules)
         {
             this.CoverageData = coverageData;
             this.Modules = modules;

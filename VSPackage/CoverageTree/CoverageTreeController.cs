@@ -23,103 +23,73 @@ using System;
 
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
-    class CoverageTreeController: PropertyChangedNotifier
+    internal class CoverageTreeController : PropertyChangedNotifier
     {
-        RootCoverageTreeNode rootNode;
-        string filter;
-        string warning;
-        DTE2 dte;
-        ICoverageViewManager coverageViewManager;
+        private RootCoverageTreeNode _rootNode;
+        private string _filter;
+        private string _warning;
+        private DTE2 _dte;
+        private ICoverageViewManager _coverageViewManager;
 
-        readonly TreeNodeVisibilityManager visibilityManager;
+        private readonly TreeNodeVisibilityManager _visibilityManager;
 
         //-----------------------------------------------------------------------
-        public readonly static string WarningMessage 
-            = "Warning: Your program has exited with error code: ";
+        public static readonly string WarningMessage = "Warning: Your program has exited with error code: ";
 
         //-----------------------------------------------------------------------
         public CoverageTreeController()
         {
-            this.visibilityManager = new TreeNodeVisibilityManager();
+            this._visibilityManager = new TreeNodeVisibilityManager();
         }
 
         //-----------------------------------------------------------------------
-        public void UpdateCoverageRate(
-            CoverageRate coverageRate,
-            DTE2 dte,
-            ICoverageViewManager coverageViewManager)
+        public void UpdateCoverageRate(CoverageRate coverageRate, DTE2 dte, ICoverageViewManager coverageViewManager)
         {
-            this.dte = dte;
-            this.coverageViewManager = coverageViewManager;
+            this._dte = dte;
+            this._coverageViewManager = coverageViewManager;
             this.Root = new RootCoverageTreeNode(coverageRate);
             this.Filter = "";
             this.DisplayCoverage = true;
 
-            if (coverageRate.ExitCode == 0)
-                this.Warning = null;
-            else
-            {
-                this.Warning = WarningMessage + coverageRate.ExitCode;
-            }
-        }
-
-        //-----------------------------------------------------------------------
-        public SharpTreeNode Current
-        {
-            set
-            {
-                var fileTreeNode = value as FileTreeNode;
-                var fileCoverage = fileTreeNode?.Coverage;
-
-                if (fileCoverage != null)
-                {
-                    if (this.dte == null)
-                        throw new InvalidOperationException("UpdateCoverageRate should be call first.");
-                    this.dte.ItemOperations.OpenFile(fileCoverage.Path, Constants.vsViewKindCode);
-                }
-            }
+            if (coverageRate.ExitCode == 0) this.Warning = null;
+            else this.Warning = WarningMessage + coverageRate.ExitCode;
         }
 
         //-----------------------------------------------------------------------
         public RootCoverageTreeNode Root
         {
-            get { return this.rootNode; }
-            private set { this.SetField(ref this.rootNode, value); }
+            get => this._rootNode; private set => this.SetField(ref this._rootNode, value);
         }
 
         //-----------------------------------------------------------------------
         public string Filter
         {
-            get { return this.filter; }
-            set 
+            get => this._filter;
+            set
             {
-                if (SetField(ref this.filter, value))
-                {
-                    if (this.Root != null && value != null)
-                    {
-                        this.visibilityManager.UpdateVisibility(this.Root, value);
-                        NotifyPropertyChanged("Root");
-                    }
-                }
+                if (!SetField(ref this._filter, value)) return;
+                if (this.Root == null || value == null) return;
+
+                this._visibilityManager.UpdateVisibility(this.Root, value);
+                NotifyPropertyChanged("Root");
             }
         }
 
         //-----------------------------------------------------------------------
         public string Warning
         {
-            get { return this.warning; }
-            set { SetField(ref this.warning, value); }
+            get => this._warning; set => SetField(ref this._warning, value);
         }
 
         //-----------------------------------------------------------------------
-        bool displayCoverage;
+        private bool _displayCoverage;
         public bool DisplayCoverage
         {
-            get { return this.displayCoverage; }
+            get => this._displayCoverage;
             set
             {
-                if (this.SetField(ref this.displayCoverage, value))
-                    this.coverageViewManager.ShowCoverage = value;
+                if (this.SetField(ref this._displayCoverage, value))
+                    this._coverageViewManager.ShowCoverage = value;
             }
         }
     }

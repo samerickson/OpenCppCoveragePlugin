@@ -2,7 +2,7 @@
 
 namespace OpenCppCoverage.VSPackage.Styles
 {
-    class VsBrushes
+    internal class VsBrushes
     {
         public static object CaptionTextKey => ShellVsBrushes.CaptionTextKey;
         public static object ToolWindowBackgroundKey => ShellVsBrushes.ToolWindowBackgroundKey;

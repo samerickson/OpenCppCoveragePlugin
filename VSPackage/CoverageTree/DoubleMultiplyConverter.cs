@@ -20,14 +20,13 @@ using System.Windows.Data;
 
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
-    class DoubleMultiplyConverter : IValueConverter
+    internal class DoubleMultiplyConverter : IValueConverter
     {
         //-----------------------------------------------------------------------
         public object Convert(
             object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return 0.0;
+            if (value == null) return 0.0;
             return (double)value * System.Convert.ToDouble(parameter);
         }
 

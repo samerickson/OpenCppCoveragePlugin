@@ -24,7 +24,7 @@ namespace OpenCppCoverage.VSPackage.Settings
     }
 
     //---------------------------------------------------------------------
-    interface IStartUpProjectSettingsBuilder
+    internal interface IStartUpProjectSettingsBuilder
     {
         StartUpProjectSettings ComputeSettings(ProjectSelectionKind kind);
     }

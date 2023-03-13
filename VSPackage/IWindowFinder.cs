@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace OpenCppCoverage.VSPackage
 {
-    interface IWindowFinder
+    internal interface IWindowFinder
     {
         T FindToolWindow<T>() where T : ToolWindowPane;
     }

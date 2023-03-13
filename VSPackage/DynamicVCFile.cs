@@ -16,22 +16,16 @@
 
 namespace OpenCppCoverage.VSPackage
 {
-    class DynamicVCFile
+    internal class DynamicVcFile
     {
         //---------------------------------------------------------------------
-        public DynamicVCFile(dynamic file)
+        public DynamicVcFile(dynamic file)
         {
             file_ = file;
         }
 
         //---------------------------------------------------------------------
-        public string FullPath
-        {
-            get
-            {
-                return file_.FullPath;
-            }
-        }
+        public string FullPath => file_.FullPath;
 
         readonly dynamic file_;
     }

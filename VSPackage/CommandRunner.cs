@@ -25,7 +25,7 @@ using System;
 
 namespace OpenCppCoverage.VSPackage
 {
-    sealed class CommandRunner: IDisposable
+    internal sealed class CommandRunner : IDisposable
     {
         readonly IServiceProvider serviceProvider;
         readonly IWindowFinder windowFinder;
@@ -63,10 +63,10 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        void RunCommand(
+        private void RunCommand(
             Action<MainWindowsManager> action)
         {
-            IVsUIShell uiShell = (IVsUIShell)serviceProvider.GetService(typeof(SVsUIShell));
+            var uiShell = (IVsUIShell)serviceProvider.GetService(typeof(SVsUIShell));
 
             var errorHandler = new ErrorHandler(uiShell);
             errorHandler.Execute(() =>
@@ -102,7 +102,7 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        ICoverageViewManager GetCoverageViewManager(IServiceProvider serviceProvider)
+        private static ICoverageViewManager GetCoverageViewManager(IServiceProvider serviceProvider)
         {
             var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
             var exporterProvider = componentModel.DefaultExportProvider;

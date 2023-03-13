@@ -25,16 +25,16 @@ namespace OpenCppCoverage.VSPackage
 {
     class OpenCppCoverageRunner
     {
-        readonly OutputWindowWriter outputWindowWriter;
-        readonly OpenCppCoverageCmdLine openCppCoverageCmdLine;
+        private readonly OutputWindowWriter _outputWindowWriter;
+        private readonly OpenCppCoverageCmdLine _openCppCoverageCmdLine;
 
         //---------------------------------------------------------------------
         public OpenCppCoverageRunner(
-            OutputWindowWriter outputWindowWriter, 
+            OutputWindowWriter outputWindowWriter,
             OpenCppCoverageCmdLine openCppCoverageCmdLine)
         {
-            this.outputWindowWriter = outputWindowWriter;
-            this.openCppCoverageCmdLine = openCppCoverageCmdLine;
+            this._outputWindowWriter = outputWindowWriter;
+            this._openCppCoverageCmdLine = openCppCoverageCmdLine;
         }
 
         //---------------------------------------------------------------------
@@ -42,11 +42,10 @@ namespace OpenCppCoverage.VSPackage
         {
             var basicSettings = settings.BasicSettings;
             var fileName = GetOpenCppCoveragePath(basicSettings.ProgramToRun);
-            var arguments = this.openCppCoverageCmdLine.Build(settings);
+            var arguments = this._openCppCoverageCmdLine.Build(settings);
 
-            this.outputWindowWriter.WriteLine("Run:");
-            this.outputWindowWriter.WriteLine(string.Format(@"""{0}"" {1}",
-                fileName, arguments));
+            this._outputWindowWriter.WriteLine("Run:");
+            this._outputWindowWriter.WriteLine($@"""{fileName}"" {arguments}");
 
             // Run in a new thread to not block UI thread.
             return Task.Run(() =>
@@ -63,7 +62,7 @@ namespace OpenCppCoverage.VSPackage
                     foreach (var environment in basicSettings.EnvironmentVariables)
                         environmentVariables[environment.Key] = environment.Value;
 
-                    if (!String.IsNullOrEmpty(basicSettings.WorkingDirectory))
+                    if (!string.IsNullOrEmpty(basicSettings.WorkingDirectory))
                         startInfo.WorkingDirectory = basicSettings.WorkingDirectory;
                     process.Start();
                     process.WaitForExit();
@@ -72,13 +71,13 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        string GetOpenCppCoveragePath(string commandPath)
+        static string GetOpenCppCoveragePath(string commandPath)
         {
             var assemblyLocation = System.Reflection.Assembly.GetExecutingAssembly().Location;
             var assemblyFolder = Path.GetDirectoryName(assemblyLocation);
-            var openCppCovergeFolder = Environment.Is64BitOperatingSystem ? 
+            var openCppCoverageFolder = Environment.Is64BitOperatingSystem ?
                                             "OpenCppCoverage-x64" : "OpenCppCoverage-x86";
-            return Path.Combine(assemblyFolder, openCppCovergeFolder, "OpenCppCoverage.exe");
+            return Path.Combine(assemblyFolder, openCppCoverageFolder, "OpenCppCoverage.exe");
         }
     }
 }

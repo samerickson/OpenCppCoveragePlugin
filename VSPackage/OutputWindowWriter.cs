@@ -21,13 +21,13 @@ using System;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class OutputWindowWriter
+    internal class OutputWindowWriter
     {
         //---------------------------------------------------------------------
         public OutputWindowWriter(DTE2 dte, IVsOutputWindow outputWindow)
         {
             // These lines show the output windows
-            Window output = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+            var output = dte.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
             output.Activate();
 
             if (Microsoft.VisualStudio.ErrorHandler.Failed(outputWindow.GetPane(OpenCppCoverageOutputPaneGuid, out outputWindowPane_)))
@@ -54,8 +54,8 @@ namespace OpenCppCoverage.VSPackage
         {
             return Microsoft.VisualStudio.ErrorHandler.Succeeded(outputWindowPane_.OutputString(message + "\n"));
         }
-        
+
         readonly IVsOutputWindowPane outputWindowPane_;
-        public readonly static Guid OpenCppCoverageOutputPaneGuid = new Guid("CB47C727-5E45-467B-A4CD-4A025986A8A0");
+        public static readonly Guid OpenCppCoverageOutputPaneGuid = new Guid("CB47C727-5E45-467B-A4CD-4A025986A8A0");
     }
 }

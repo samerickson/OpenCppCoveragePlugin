@@ -15,40 +15,39 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using OpenCppCoverage.VSPackage.CoverageRateBuilder;
 using System;
 
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
-    class CoverageTreeManager
+    internal class CoverageTreeManager
     {
         readonly IWindowFinder windowFinder;
-        //---------------------------------------------------------------------        
+        //---------------------------------------------------------------------
         public CoverageTreeManager(IWindowFinder windowFinder)
         {
             this.windowFinder = windowFinder;
         }
 
-        //---------------------------------------------------------------------        
+        //---------------------------------------------------------------------
         public void ShowTreeCoverage(
             DTE2 dte,
-            ICoverageViewManager coverageViewManager, 
+            ICoverageViewManager coverageViewManager,
             CoverageRate coverageRate)
         {
             ShowTreeCoverage(window => window.Controller.UpdateCoverageRate(
                 coverageRate, dte, coverageViewManager));
         }
 
-        //---------------------------------------------------------------------        
+        //---------------------------------------------------------------------
         public void ShowTreeCoverage()
         {
-            ShowTreeCoverage(windows => {});
+            ShowTreeCoverage(windows => { });
         }
 
-        //---------------------------------------------------------------------        
-        void ShowTreeCoverage(Action<CoverageTreeToolWindow> action)
+        //---------------------------------------------------------------------
+        private void ShowTreeCoverage(Action<CoverageTreeToolWindow> action)
         {
             var window = this.windowFinder.FindToolWindow<CoverageTreeToolWindow>();
 

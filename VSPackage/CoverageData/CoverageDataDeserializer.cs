@@ -21,7 +21,7 @@ using System.IO;
 
 namespace OpenCppCoverage.VSPackage.CoverageData
 {
-    class CoverageDataDeserializer
+    internal class CoverageDataDeserializer
     {
         public static uint FileTypeId = 1351727964;
 
@@ -29,7 +29,7 @@ namespace OpenCppCoverage.VSPackage.CoverageData
         public CoverageResult Deserialize(Stream stream)
         {
             var codedInputStream = CodedInputStream.CreateInstance(stream);
-            
+
             uint fileTypeId = 0;
             if (!codedInputStream.ReadUInt32(ref fileTypeId) || fileTypeId != FileTypeId)
                 throw new Exception("Binary format is not valid.");
@@ -44,7 +44,7 @@ namespace OpenCppCoverage.VSPackage.CoverageData
         }
 
         //---------------------------------------------------------------------
-        static T ReadMessage<T>(CodedInputStream input, Func<byte[], T> parseFrom)
+        private static T ReadMessage<T>(CodedInputStream input, Func<byte[], T> parseFrom)
         {
             uint size = 0;
 

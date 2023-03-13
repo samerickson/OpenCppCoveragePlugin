@@ -21,24 +21,18 @@ namespace OpenCppCoverage.VSPackage
         //---------------------------------------------------------------------
         public DynamicVCCLCompilerTool(dynamic compilerTool)
         {
-            this.compilerTool = compilerTool;
+            this._compilerTool = compilerTool;
         }
 
         //---------------------------------------------------------------------
-        public bool IsOptimizeDisabled
-        {
-            get
-            {
-                return (int)compilerTool.Optimization == (int)OptimizeOption.optimizeDisabled;
-            }
-        }
+        public bool IsOptimizeDisabled => (int)_compilerTool.Optimization == (int)OptimizeOption.OptimizeDisabled;
 
         //---------------------------------------------------------------------
-        enum OptimizeOption
+        private enum OptimizeOption
         {
-            optimizeDisabled = 0
+            OptimizeDisabled = 0
         }
 
-        readonly dynamic compilerTool;
+        private readonly dynamic _compilerTool;
     }
 }

@@ -20,10 +20,10 @@ using System.Collections.Generic;
 namespace OpenCppCoverage.VSPackage.CoverageTree
 {
     //---------------------------------------------------------------------------
-    class RootCoverageTreeNode : BasicCoverageTreeNode
+    internal class RootCoverageTreeNode : BasicCoverageTreeNode
     {
         readonly CoverageRate coverage;
-        
+
         //-----------------------------------------------------------------------
         public static readonly string IconFilename = "48px-Gnome-folder.svg.png";
 
@@ -45,7 +45,7 @@ namespace OpenCppCoverage.VSPackage.CoverageTree
     }
 
     //-----------------------------------------------------------------------
-    class ModuleTreeNode : BasicCoverageTreeNode
+    internal class ModuleTreeNode : BasicCoverageTreeNode
     {
         readonly ModuleCoverage coverage;
 
@@ -67,11 +67,10 @@ namespace OpenCppCoverage.VSPackage.CoverageTree
     }
 
     //-----------------------------------------------------------------------
-    class FileTreeNode : BasicCoverageTreeNode
+    internal class FileTreeNode : BasicCoverageTreeNode
     {
         //-----------------------------------------------------------------------
-        public FileTreeNode(string name, FileCoverage coverage)
-            : base(name, coverage, "48px-Gnome-text-x-generic.svg.png", true)
+        public FileTreeNode(string name, FileCoverage coverage) : base(name, coverage, "48px-Gnome-text-x-generic.svg.png", true)
         {
             this.Coverage = coverage;
         }

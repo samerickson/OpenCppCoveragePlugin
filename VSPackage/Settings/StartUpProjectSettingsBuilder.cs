@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace OpenCppCoverage.VSPackage.Settings
 {
-    class StartUpProjectSettingsBuilder: IStartUpProjectSettingsBuilder
+    class StartUpProjectSettingsBuilder : IStartUpProjectSettingsBuilder
     {
         //---------------------------------------------------------------------
         public StartUpProjectSettingsBuilder(
@@ -69,13 +69,13 @@ namespace OpenCppCoverage.VSPackage.Settings
             {
                 case ProjectSelectionKind.StartUpProject:
                     project = GetOptionalStartupProject(solution, projects);
-                break;
+                    break;
                 case ProjectSelectionKind.SelectedProject:
                     project = GetOptionalSelectedProject(projects);
-                break;
+                    break;
             }
 
-            if (project == null) 
+            if (project == null)
                 return null;
 
             return ComputeOptionalSettings(activeConfiguration, projects, project);
@@ -86,7 +86,7 @@ namespace OpenCppCoverage.VSPackage.Settings
             SolutionConfiguration2 activeConfiguration,
             List<ExtendedProject> projects,
             ExtendedProject project)
-        { 
+        {
             var startupConfiguration = this.configurationManager.GetConfiguration(
                 activeConfiguration, project);
             var debugSettings = startupConfiguration.DebugSettings;
@@ -95,7 +95,7 @@ namespace OpenCppCoverage.VSPackage.Settings
             settings.WorkingDir = startupConfiguration.Evaluate(debugSettings.WorkingDirectory);
             settings.Arguments = startupConfiguration.Evaluate(debugSettings.CommandArguments);
             settings.Command = startupConfiguration.Evaluate(debugSettings.Command);
-            settings.SolutionConfigurationName = 
+            settings.SolutionConfigurationName =
                 this.configurationManager.GetSolutionConfigurationName(activeConfiguration);
             settings.ProjectName = project.UniqueName;
             settings.ProjectPath = project.Path;
@@ -108,12 +108,12 @@ namespace OpenCppCoverage.VSPackage.Settings
             settings.IsOptimizedBuildEnabled = !vcclCompilerTool.IsOptimizeDisabled;
             settings.EnvironmentVariables = GetEnvironmentVariables(startupConfiguration);
 
-            return settings;                                                 
+            return settings;
         }
 
         //---------------------------------------------------------------------
-        static IEnumerable<KeyValuePair<string, string>> 
-            GetEnvironmentVariables(DynamicVCConfiguration configuration)
+        static IEnumerable<KeyValuePair<string, string>>
+            GetEnvironmentVariables(DynamicVcConfiguration configuration)
         {
             var environmentVariables = new List<KeyValuePair<string, string>>();
             string environmentStr = configuration.Evaluate("$(LocalDebuggerEnvironment)");
@@ -136,7 +136,7 @@ namespace OpenCppCoverage.VSPackage.Settings
         List<ExtendedProject> GetProjects(Solution2 solution)
         {
             var projects = new List<ExtendedProject>();
-            
+
             foreach (Project project in solution.Projects)
                 projects.AddRange(CreateExtendedProjectsFor(project));
 
@@ -164,7 +164,7 @@ namespace OpenCppCoverage.VSPackage.Settings
                 try
                 {
                     if (projectObject != null && projectObject.Kind == "VCProject")
-                        projects.Add(new ExtendedProject(project, new DynamicVCProject(projectObject)));
+                        projects.Add(new ExtendedProject(project, new DynamicVcProject(projectObject)));
                 }
                 catch (RuntimeBinderException)
                 {
@@ -179,7 +179,7 @@ namespace OpenCppCoverage.VSPackage.Settings
         ExtendedProject GetOptionalStartupProject(
             Solution2 solution,
             List<ExtendedProject> projects)
-        {            
+        {
             var startupProjectsNames = solution.SolutionBuild.StartupProjects as object[];
 
             if (startupProjectsNames == null)
@@ -196,7 +196,7 @@ namespace OpenCppCoverage.VSPackage.Settings
         ExtendedProject GetOptionalSelectedProject(List<ExtendedProject> projects)
         {
             var selectedProjects = ((Array)this.dte.ActiveSolutionProjects).Cast<Project>();
-            
+
             if (selectedProjects.Count() != 1)
                 return null;
 

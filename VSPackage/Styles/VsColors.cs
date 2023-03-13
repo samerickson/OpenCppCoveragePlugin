@@ -2,7 +2,7 @@
 
 namespace OpenCppCoverage.VSPackage.Styles
 {
-    class VsColors
+    internal class VsColors
     {
         public static object InactiveBorderKey => ShellVsColors.InactiveBorderKey;
         public static object ComboBoxBackgroundKey => ShellVsColors.ComboBoxBackgroundKey;

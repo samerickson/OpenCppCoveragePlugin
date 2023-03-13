@@ -20,12 +20,12 @@ using System.Threading.Tasks;
 
 namespace OpenCppCoverage.VSPackage
 {
-    class ErrorHandler
+    internal class ErrorHandler
     {
         //---------------------------------------------------------------------
         public ErrorHandler(IVsUIShell uiShell)
         {
-            uiShell_ = uiShell;
+            _uiShell = uiShell;
         }
 
         //---------------------------------------------------------------------
@@ -40,14 +40,13 @@ namespace OpenCppCoverage.VSPackage
             }
             catch (VSPackageException exception)
             {
-                if (OutputWriter != null)
-                    OutputWriter.WriteLine(exception.Message);
+                OutputWriter?.WriteLine(exception.Message);
                 ShowMessage(exception.Message);
             }
             catch (Exception exception)
             {
-                if (OutputWriter != null && OutputWriter.WriteLine(exception.ToString()))             
-                    ShowMessage("Unknow error. Please see the output console for more information.");
+                if (OutputWriter != null && OutputWriter.WriteLine(exception.ToString()))
+                    ShowMessage("Unknown error. Please see the output console for more information.");
                 else
                     ShowMessage(exception.ToString());
             }
@@ -64,13 +63,12 @@ namespace OpenCppCoverage.VSPackage
         }
 
         //---------------------------------------------------------------------
-        void ShowMessage(string message)
+        private void ShowMessage(string message)
         {
-            Guid clsid = Guid.Empty;
-            int result;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(uiShell_.ShowMessageBox(
+            var classic = Guid.Empty;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(_uiShell.ShowMessageBox(
                        0,
-                       ref clsid,
+                       ref classic,
                        "OpenCppCoverage",
                        message,
                        string.Empty,
@@ -79,9 +77,9 @@ namespace OpenCppCoverage.VSPackage
                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
                        OLEMSGICON.OLEMSGICON_INFO,
                        0, // false
-                       out result));
+                       out _));
         }
 
-        readonly IVsUIShell uiShell_;
+        private readonly IVsUIShell _uiShell;
     }
 }
